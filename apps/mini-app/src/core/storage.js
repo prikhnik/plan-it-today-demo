@@ -1,12 +1,30 @@
+// @ts-check
 const PREFIX = 'pit:';
 
-export function readJson(key, fallback) {
+export const BROKEN = Symbol('broken');
+
+/**
+ * @param {string} key
+ * @returns {unknown} null when missing or storage is unavailable, BROKEN when the JSON does not parse.
+ */
+export function readStored(key) {
+  let raw;
   try {
-    const raw = localStorage.getItem(PREFIX + key);
-    return raw ? JSON.parse(raw) : fallback;
+    raw = localStorage.getItem(PREFIX + key);
   } catch {
-    return fallback;
+    return null;
   }
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return BROKEN;
+  }
+}
+
+export function readJson(key, fallback) {
+  const value = readStored(key);
+  return value === null || value === BROKEN ? fallback : value;
 }
 
 export function writeJson(key, value) {

@@ -1,13 +1,18 @@
+// @ts-check
 import { navigate } from '../core/router.js';
 import { store } from '../data/store.js';
 import { TERMS, TERMS_VERSION } from '../data/terms.js';
 
 function renderTerms(footer) {
-  const sections = TERMS.sections.map(({ title, text }) => `
+  const sections = TERMS.sections
+    .map(
+      ({ title, text }) => `
     <section class="terms__section">
       <h2 class="terms__title">${title}</h2>
       <p class="terms__text">${text}</p>
-    </section>`).join('');
+    </section>`,
+    )
+    .join('');
 
   return `
     <section class="onboarding onboarding--terms">
@@ -23,7 +28,8 @@ function renderTerms(footer) {
 export const termsScreen = {
   chrome: 'onboarding',
 
-  render: () => renderTerms(`
+  render: () =>
+    renderTerms(`
     <button class="button button--primary" type="button" data-action="accept">Прийняти</button>
     <p class="onboarding__note">${TERMS.consent}</p>`),
 

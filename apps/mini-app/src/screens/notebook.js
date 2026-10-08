@@ -1,3 +1,4 @@
+// @ts-check
 import {
   addMonths,
   extractNoteDate,
@@ -24,7 +25,11 @@ function updateForm() {
 
 function openCalendar(month) {
   state.month = month;
-  root.querySelector('.notebook__modal').innerHTML = renderCalendar({ month, selected: state.date, today: toIsoDate() });
+  root.querySelector('.notebook__modal').innerHTML = renderCalendar({
+    month,
+    selected: state.date,
+    today: toIsoDate(),
+  });
 }
 
 function closeCalendar() {
@@ -49,7 +54,13 @@ export const notebookScreen = {
   render(params) {
     const today = toIsoDate();
     if (state.resume) state.resume = false;
-    else Object.assign(state, { text: '', date: params.date ?? today, manualDate: Boolean(params.date), recognized: false });
+    else
+      Object.assign(state, {
+        text: '',
+        date: params.date ?? today,
+        manualDate: Boolean(params.date),
+        recognized: false,
+      });
 
     return `
       <section class="notebook">

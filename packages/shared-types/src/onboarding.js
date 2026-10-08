@@ -1,3 +1,4 @@
+// @ts-check
 /** @typedef {import('./types.js').UserProfile} UserProfile */
 
 /**
@@ -5,8 +6,12 @@
  * @returns {-1 | 0 | 1}
  */
 export function compareVersions(a, b) {
-  const left = String(a).split('.').map((part) => Number.parseInt(part, 10) || 0);
-  const right = String(b).split('.').map((part) => Number.parseInt(part, 10) || 0);
+  const left = String(a)
+    .split('.')
+    .map((part) => Number.parseInt(part, 10) || 0);
+  const right = String(b)
+    .split('.')
+    .map((part) => Number.parseInt(part, 10) || 0);
   for (let i = 0; i < Math.max(left.length, right.length); i += 1) {
     const diff = (left[i] ?? 0) - (right[i] ?? 0);
     if (diff !== 0) return diff > 0 ? 1 : -1;

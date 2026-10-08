@@ -1,3 +1,4 @@
+// @ts-check
 const webApp = window.Telegram?.WebApp;
 
 export const isTelegram = Boolean(webApp?.initData);
@@ -39,7 +40,7 @@ export function setBackButton(visible, handler) {
 
 /** @returns {{ id: number, first_name: string, last_name?: string, username?: string } | null} */
 export function getTelegramUser() {
-  return isTelegram ? webApp.initDataUnsafe?.user ?? null : null;
+  return isTelegram ? (webApp.initDataUnsafe?.user ?? null) : null;
 }
 
 export function openLink(url) {

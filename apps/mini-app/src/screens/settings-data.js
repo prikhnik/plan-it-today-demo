@@ -1,3 +1,4 @@
+// @ts-check
 import { escapeHtml } from '../core/html.js';
 import { navigate } from '../core/router.js';
 import { getTelegramUser } from '../core/telegram.js';
@@ -16,11 +17,15 @@ export const settingsDataScreen = {
   tab: 'settings',
 
   render(params) {
-    const facts = getFacts().map(([term, value]) => `
+    const facts = getFacts()
+      .map(
+        ([term, value]) => `
       <div class="facts__row">
         <dt class="facts__term">${term}</dt>
         <dd class="facts__value">${escapeHtml(value)}</dd>
-      </div>`).join('');
+      </div>`,
+      )
+      .join('');
 
     const actions = params.confirm
       ? `

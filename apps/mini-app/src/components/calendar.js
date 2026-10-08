@@ -1,3 +1,4 @@
+// @ts-check
 import { WEEKDAY_TITLES, formatMonthTitle, getMonthGrid, getMonthStart } from '@plan-it-today/shared-types';
 
 function renderDay(date, { selected, today, min }) {
@@ -15,12 +16,15 @@ function renderDay(date, { selected, today, min }) {
  */
 export function renderCalendar({ month, selected, today, min = today }) {
   const canGoBack = month > getMonthStart(min);
-  const days = getMonthGrid(month).flat().map((date) => renderDay(date, { selected, today, min })).join('');
+  const days = getMonthGrid(month)
+    .flat()
+    .map((date) => renderDay(date, { selected, today, min }))
+    .join('');
   const weekdays = WEEKDAY_TITLES.map((title) => `<span class="calendar__weekday">${title}</span>`).join('');
 
   return `
     <div class="modal">
-      <button class="modal__backdrop" type="button" data-action="calendarClose" aria-label="Закрити календар"></button>
+      <button class="modal__backdrop" type="button" tabindex="-1" data-action="calendarClose" aria-label="Закрити календар"></button>
       <div class="modal__panel calendar" role="dialog" aria-modal="true" aria-label="Вибір дати">
         <div class="calendar__header">
           <button class="calendar__nav calendar__nav--prev" type="button" data-action="calendarPrev" aria-label="Попередній місяць"${canGoBack ? '' : ' disabled'}></button>

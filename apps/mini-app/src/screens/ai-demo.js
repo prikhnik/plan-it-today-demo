@@ -1,3 +1,4 @@
+// @ts-check
 import { back } from '../core/router.js';
 import { AI_DEMO } from '../data/ai-demo.js';
 
@@ -9,7 +10,15 @@ let root = null;
 let timers = [];
 
 function reset(stage) {
-  Object.assign(state, { stage, phase: 'intro', typed: '', pressed: false, drawn: 0, checked: new Set(), renamed: false });
+  Object.assign(state, {
+    stage,
+    phase: 'intro',
+    typed: '',
+    pressed: false,
+    drawn: 0,
+    checked: new Set(),
+    renamed: false,
+  });
 }
 
 function clearTimers() {
@@ -64,7 +73,9 @@ function renderStep(step, isChild) {
     done && ' step--done',
     state.phase === 'drawing' && order === state.drawn - 1 && ' ai-demo__step--drawing',
     state.renamed && step.id === rename.id && ' ai-demo__step--renamed',
-  ].filter(Boolean).join('');
+  ]
+    .filter(Boolean)
+    .join('');
   const children = (step.children ?? []).map((child) => renderStep(child, true)).join('');
 
   return `
@@ -102,7 +113,7 @@ function renderQuest() {
         <span class="quest__edit${state.phase === 'editing' ? ' ai-demo__edit' : ''}" aria-hidden="true"></span>
       </header>
       <p class="quest__subtitle">Квест на сьогодні</p>
-      <div class="progress" style="--progress: ${done / steps.length}">
+      <div class="progress" data-progress="${done / steps.length}">
         <span class="progress__bar"><span class="progress__fill"></span></span>
         <span class="progress__label">${done} з ${steps.length}</span>
       </div>

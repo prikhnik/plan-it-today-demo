@@ -1,4 +1,13 @@
-import { extractNoteDate, formatDateChip, formatDayLabel, getCardProgress, isQuest, toIsoDate } from '@plan-it-today/shared-types';
+// @ts-check
+import {
+  extractNoteDate,
+  formatDateChip,
+  formatDayLabel,
+  getCardProgress,
+  isPriorityShown,
+  isQuest,
+  toIsoDate,
+} from '@plan-it-today/shared-types';
 import { renderBadge } from '../components/badge.js';
 import { renderEmpty } from '../components/empty.js';
 import { escapeHtml } from '../core/html.js';
@@ -11,7 +20,11 @@ const PAPERS = 3;
 
 function renderNote(card, progress, index) {
   const deco = getDecoIcon(card.title);
-  const modifiers = [`paper-${(index % PAPERS) + 1}`, card.status === 'done' && 'done']
+  const modifiers = [
+    `paper-${(index % PAPERS) + 1}`,
+    card.status === 'done' && 'done',
+    isPriorityShown(card) && 'priority',
+  ]
     .filter(Boolean)
     .map((modifier) => ` note--${modifier}`)
     .join('');

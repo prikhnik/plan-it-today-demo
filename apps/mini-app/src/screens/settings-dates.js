@@ -1,3 +1,4 @@
+// @ts-check
 import { formatDayLabel, resolveNoteDate, toIsoDate } from '@plan-it-today/shared-types';
 
 const EXAMPLES = ['завтра', 'післязавтра', 'у пт', 'в понеділок', '15 жовтня', '15.10', 'через 3 дні'];
@@ -8,11 +9,13 @@ export const settingsDatesScreen = {
 
   render() {
     const today = toIsoDate();
-    const rows = EXAMPLES.map((phrase) => `
+    const rows = EXAMPLES.map(
+      (phrase) => `
       <li class="cheatsheet__row">
         <span class="cheatsheet__phrase">«${phrase}»</span>
         <span class="cheatsheet__result">${formatDayLabel(resolveNoteDate(phrase, today), today)}</span>
-      </li>`).join('');
+      </li>`,
+    ).join('');
 
     return `
       <section class="screen">

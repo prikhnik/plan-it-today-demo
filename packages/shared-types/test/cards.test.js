@@ -1,10 +1,19 @@
+// @ts-check
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getDayCards, getPlannerCards, isOnPlanner, shouldReopen } from '../src/cards.js';
+import { getDayCards, getPlannerCards, isOnPlanner, isPriorityShown, shouldReopen } from '../src/cards.js';
 
 const TODAY = '2026-10-08';
+/** @returns {import('../src/types.js').Card} */
 const card = (id, props = {}) => ({
-  id, title: id, date: TODAY, status: 'active', source: 'manual', completedAt: null, createdAt: '2026-10-08T09:00:00.000Z', ...props,
+  id,
+  title: id,
+  date: TODAY,
+  status: 'active',
+  source: 'manual',
+  completedAt: null,
+  createdAt: '2026-10-08T09:00:00.000Z',
+  ...props,
 });
 
 test('active cards of today and past days are on the planner', () => {
@@ -26,7 +35,10 @@ test('active newest first, done at the bottom', () => {
     card('new', { createdAt: '2026-10-08T11:00:00.000Z' }),
     card('future', { date: '2026-10-10' }),
   ];
-  assert.deepEqual(getPlannerCards(cards, TODAY).map((c) => c.id), ['new', 'old', 'done']);
+  assert.deepEqual(
+    getPlannerCards(cards, TODAY).map((c) => c.id),
+    ['new', 'old', 'done'],
+  );
 });
 
 test('done card reopens only when its steps are incomplete', () => {
@@ -44,5 +56,51 @@ test('day cards: active only, exact day, newest first', () => {
     card('done', { date: '2026-10-09', status: 'done', completedAt: TODAY }),
     card('other', { date: '2026-10-10' }),
   ];
-  assert.deepEqual(getDayCards(cards, '2026-10-09').map((c) => c.id), ['new', 'old']);
+  assert.deepEqual(
+    getDayCards(cards, '2026-10-09').map((c) => c.id),
+    ['new', 'old'],
+  );
+});
+
+test('priority cards first on the planner, newest first inside each group', () => {
+  const cards = [
+    card('plain-new', { createdAt: '2026-10-08T12:00:00.000Z' }),
+    card('prio-old', { priority: true, createdAt: '2026-10-08T08:00:00.000Z' }),
+    card('prio-new', { priority: true, createdAt: '2026-10-08T10:00:00.000Z' }),
+    card('plain-old', { priority: false, createdAt: '2026-10-08T07:00:00.000Z' }),
+    card('prio-done', { priority: true, status: 'done', completedAt: TODAY, createdAt: '2026-10-08T06:00:00.000Z' }),
+    card('done', { status: 'done', completedAt: TODAY, createdAt: '2026-10-08T11:00:00.000Z' }),
+  ];
+  assert.deepEqual(
+    getPlannerCards(cards, TODAY).map((c) => c.id),
+    ['prio-new', 'prio-old', 'plain-new', 'plain-old', 'done', 'prio-done'],
+  );
+});
+
+test('rolled-over priority card keeps its place on top', () => {
+  const cards = [
+    card('new'),
+    card('yesterday-prio', { priority: true, date: '2026-10-07', createdAt: '2026-10-07T09:00:00.000Z' }),
+  ];
+  assert.deepEqual(
+    getPlannerCards(cards, TODAY).map((c) => c.id),
+    ['yesterday-prio', 'new'],
+  );
+});
+
+test('day cards: priority first', () => {
+  const cards = [
+    card('new', { date: '2026-10-09', createdAt: '2026-10-08T10:00:00.000Z' }),
+    card('prio', { date: '2026-10-09', priority: true, createdAt: '2026-10-08T08:00:00.000Z' }),
+  ];
+  assert.deepEqual(
+    getDayCards(cards, '2026-10-09').map((c) => c.id),
+    ['prio', 'new'],
+  );
+});
+
+test('priority is shown only on active cards', () => {
+  assert.equal(isPriorityShown(card('a', { priority: true })), true);
+  assert.equal(isPriorityShown(card('b')), false);
+  assert.equal(isPriorityShown(card('c', { priority: true, status: 'done', completedAt: TODAY })), false);
 });

@@ -1,3 +1,4 @@
+// @ts-check
 const ROWS = [
   { label: 'Тема', nav: 'settings-theme' },
   { label: 'Як писати дату', nav: 'settings-dates' },
@@ -12,13 +13,15 @@ export const settingsScreen = {
   chrome: 'tab',
   tab: 'settings',
   render() {
-    const rows = ROWS.map(({ label, nav, toast }) => `
+    const rows = ROWS.map(
+      ({ label, nav, toast }) => `
       <li class="menu__item">
         <button class="menu__link" type="button" ${nav ? `data-nav="${nav}"` : `data-toast="${toast}"`}>
           <span class="menu__label">${label}</span>
           <span class="menu__chevron" aria-hidden="true"></span>
         </button>
-      </li>`).join('');
+      </li>`,
+    ).join('');
 
     return `
       <section class="screen">

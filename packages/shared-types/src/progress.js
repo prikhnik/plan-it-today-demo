@@ -1,3 +1,4 @@
+// @ts-check
 /** @typedef {import('./types.js').Step} Step */
 /** @typedef {import('./types.js').Progress} Progress */
 

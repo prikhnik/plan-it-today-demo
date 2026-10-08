@@ -1,3 +1,4 @@
+// @ts-check
 const TABS = [
   { name: 'planner', label: 'Сьогодні' },
   { name: 'future', label: 'Майбутнє' },

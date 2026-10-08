@@ -1,6 +1,16 @@
+// @ts-check
 /** @typedef {import('./types.js').Card} Card */
 
 const byNewest = (a, b) => b.createdAt.localeCompare(a.createdAt);
+const byPriorityThenNewest = (a, b) => Number(Boolean(b.priority)) - Number(Boolean(a.priority)) || byNewest(a, b);
+
+/**
+ * «Важливо» is highlighted only while the card is active.
+ * @param {Card} card
+ */
+export function isPriorityShown(card) {
+  return card.status === 'active' && Boolean(card.priority);
+}
 
 /**
  * Planner shows today only: active cards up to today (past ones roll over silently)
@@ -13,14 +23,14 @@ export function isOnPlanner(card, today) {
 }
 
 /**
- * Active cards first (newest on top), completed today at the bottom.
+ * Active cards first (priority on top, then newest), completed today at the bottom.
  * @param {Card[]} cards
  * @param {string} today ISO date.
  */
 export function getPlannerCards(cards, today) {
   const visible = cards.filter((card) => isOnPlanner(card, today));
   return [
-    ...visible.filter((card) => card.status === 'active').sort(byNewest),
+    ...visible.filter((card) => card.status === 'active').sort(byPriorityThenNewest),
     ...visible.filter((card) => card.status === 'done').sort(byNewest),
   ];
 }
@@ -36,10 +46,10 @@ export function shouldReopen(card, progress) {
 }
 
 /**
- * Active cards planned for a given future day, newest first.
+ * Active cards planned for a given future day: priority first, then newest.
  * @param {Card[]} cards
  * @param {string} day ISO date.
  */
 export function getDayCards(cards, day) {
-  return cards.filter((card) => card.status === 'active' && card.date === day).sort(byNewest);
+  return cards.filter((card) => card.status === 'active' && card.date === day).sort(byPriorityThenNewest);
 }

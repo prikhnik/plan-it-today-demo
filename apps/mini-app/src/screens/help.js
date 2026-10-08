@@ -1,3 +1,4 @@
+// @ts-check
 import { getCurrent, navigate } from '../core/router.js';
 import { openLink } from '../core/telegram.js';
 import { showToast } from '../core/toast.js';

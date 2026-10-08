@@ -1,0 +1,9 @@
+*.md
+docs/
+reports/
+Claude outputs/
+pnpm-lock.yaml
+dist/
+apps/mini-app/src/assets/
+test-results/
+playwright-report/

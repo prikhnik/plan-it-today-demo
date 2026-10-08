@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * AI assistant demo (spec 6.7): separate mock world, never written to the user's cards.
  * Times are milliseconds from «Почати».

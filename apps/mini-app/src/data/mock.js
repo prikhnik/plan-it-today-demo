@@ -1,3 +1,4 @@
+// @ts-check
 import { addDays } from '@plan-it-today/shared-types';
 import { createId } from '../core/id.js';
 
@@ -18,6 +19,7 @@ export const MOCK_CARDS = [
   {
     title: 'Подзвонити в банк',
     day: 0,
+    priority: true,
     steps: [step('Знайти номер'), step('Підготувати паспорт'), step('Подзвонити')],
   },
   { title: 'Забрати посилку', day: 0 },
@@ -56,6 +58,7 @@ export const MOCK_CARDS = [
   {
     title: 'Записатися до лікаря',
     day: 3,
+    priority: true,
     steps: [step('Знайти телефон'), step('Подзвонити, домовитися про час'), step('Додати квест на потрібну дату')],
   },
 ];
@@ -86,6 +89,7 @@ export function createMockData(today, now = Date.now()) {
       source: 'manual',
       completedAt: mock.done ? today : null,
       createdAt: new Date(now - index * 60_000).toISOString(),
+      priority: Boolean(mock.priority),
     });
     addSteps(mock.steps ?? [], id, null, Boolean(mock.done));
   });

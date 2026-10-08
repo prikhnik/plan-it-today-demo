@@ -1,6 +1,7 @@
+// @ts-check
 import { navigate } from '../core/router.js';
 import { isTelegram } from '../core/telegram.js';
-import { applyTheme } from '../core/theme.js';
+import { switchTheme } from '../core/theme.js';
 import { store } from '../data/store.js';
 
 const OPTIONS = [
@@ -15,7 +16,8 @@ export const settingsThemeScreen = {
 
   render() {
     const current = store.getProfile().theme;
-    const options = OPTIONS.map(({ value, label, hint }) => `
+    const options = OPTIONS.map(
+      ({ value, label, hint }) => `
       <li>
         <button class="option${value === current ? ' option--selected' : ''}" type="button" role="radio"
           aria-checked="${value === current}" data-action="setTheme" data-value="${value}">
@@ -23,7 +25,8 @@ export const settingsThemeScreen = {
           <span class="option__label">${label}</span>
           ${hint ? `<span class="option__hint">${hint}</span>` : ''}
         </button>
-      </li>`).join('');
+      </li>`,
+    ).join('');
 
     return `
       <section class="screen">
@@ -35,8 +38,7 @@ export const settingsThemeScreen = {
   actions: {
     setTheme(el) {
       store.setTheme(el.dataset.value);
-      applyTheme(el.dataset.value);
-      navigate('settings-theme', {}, { replace: true });
+      switchTheme(el.dataset.value, () => navigate('settings-theme', {}, { replace: true }));
     },
   },
 };

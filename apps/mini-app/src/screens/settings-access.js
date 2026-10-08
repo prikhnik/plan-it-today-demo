@@ -1,3 +1,4 @@
+// @ts-check
 import { addToHomeScreen, canAddToHomeScreen } from '../core/telegram.js';
 
 export const settingsAccessScreen = {

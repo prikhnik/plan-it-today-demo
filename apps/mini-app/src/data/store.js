@@ -1,3 +1,4 @@
+// @ts-check
 import {
   getCardProgress,
   getChildSteps,
@@ -7,11 +8,14 @@ import {
   toIsoDate,
 } from '@plan-it-today/shared-types';
 import { createId } from '../core/id.js';
-import { clearAll, readJson, writeJson } from '../core/storage.js';
+import { track } from '../core/track.js';
+import { BROKEN, clearAll, readStored, writeJson } from '../core/storage.js';
+import { migrateData, normalizeProfile, SCHEMA_VERSION } from './migrations.js';
 import { createMockData } from './mock.js';
 
 const PROFILE_KEY = 'profile';
 const DATA_KEY = 'data';
+const VERSION_KEY = 'schemaVersion';
 
 /** @type {import('@plan-it-today/shared-types/src/types.js').UserProfile} */
 const DEFAULT_PROFILE = {
@@ -21,12 +25,40 @@ const DEFAULT_PROFILE = {
   theme: 'system',
 };
 
-let profile = { ...DEFAULT_PROFILE, ...readJson(PROFILE_KEY, {}) };
-let data = readJson(DATA_KEY, null) ?? seedData();
+let broken = false;
+let profile = loadProfile();
+let data = loadData();
+
+function loadProfile() {
+  const stored = readStored(PROFILE_KEY);
+  if (stored === null) return { ...DEFAULT_PROFILE };
+  const valid = stored === BROKEN ? null : normalizeProfile(stored);
+  broken ||= !valid;
+  return valid ?? { ...DEFAULT_PROFILE };
+}
+
+/** Old records are migrated and saved; unreadable ones leave the app on the reset screen. */
+function loadData() {
+  const stored = readStored(DATA_KEY);
+  if (stored === null) return seedData();
+  const version = readStored(VERSION_KEY);
+  const migrated = stored === BROKEN || version === BROKEN ? null : migrateData(stored, version);
+  if (!migrated) {
+    broken = true;
+    return { cards: [], steps: [] };
+  }
+  if (version !== SCHEMA_VERSION) saveData(migrated);
+  return migrated;
+}
+
+function saveData(value) {
+  writeJson(DATA_KEY, value);
+  writeJson(VERSION_KEY, SCHEMA_VERSION);
+}
 
 function seedData() {
   const seeded = createMockData(toIsoDate());
-  writeJson(DATA_KEY, seeded);
+  saveData(seeded);
   return seeded;
 }
 
@@ -37,7 +69,7 @@ function updateProfile(patch) {
 
 function updateData(patch) {
   data = { ...data, ...patch };
-  writeJson(DATA_KEY, data);
+  saveData(data);
 }
 
 function patchCard(id, patch) {
@@ -57,12 +89,19 @@ function updateSteps(steps, cardId) {
 }
 
 export const store = {
+  /** Stored data could not be read: the app shows only the reset screen. */
+  isBroken: () => broken,
   getProfile: () => profile,
   markIntroSeen: () => updateProfile({ introSeen: true }),
   acceptTerms: (version) => updateProfile({ termsAcceptedVersion: version, termsAcceptedAt: new Date().toISOString() }),
-  setTheme: (theme) => updateProfile({ theme }),
+  setTheme(theme) {
+    updateProfile({ theme });
+    track('theme_changed', { theme });
+  },
 
   getSteps: () => data.steps,
+  /** Everything the user typed: kept out of error reports. */
+  getUserTexts: () => [...data.cards.map((card) => card.title), ...data.steps.map((step) => step.text)],
   getCard: (id) => data.cards.find((card) => card.id === id) ?? null,
   getPlannerCards: (today) => getPlannerCards(data.cards, today),
   getDayCards: (day) => getDayCards(data.cards, day),
@@ -76,8 +115,10 @@ export const store = {
       source: 'manual',
       completedAt: null,
       createdAt: new Date().toISOString(),
+      priority: false,
     };
     updateData({ cards: [...data.cards, card] });
+    track('card_created', { future: date > toIsoDate() });
     return card;
   },
 
@@ -87,6 +128,7 @@ export const store = {
 
   completeCard(id) {
     patchCard(id, { status: 'done', completedAt: toIsoDate() });
+    track('quest_completed', { steps: getCardProgress(id, data.steps).total });
   },
 
   reopenCard(id) {
@@ -109,7 +151,10 @@ export const store = {
   toggleStep(id) {
     const step = data.steps.find((item) => item.id === id);
     if (!step || getChildSteps(data.steps, id).length > 0) return;
-    updateSteps(data.steps.map((item) => (item.id === id ? { ...item, done: !item.done } : item)), step.cardId);
+    updateSteps(
+      data.steps.map((item) => (item.id === id ? { ...item, done: !item.done } : item)),
+      step.cardId,
+    );
   },
 
   updateStepText(id, text) {
@@ -119,7 +164,10 @@ export const store = {
   deleteStep(id) {
     const step = data.steps.find((item) => item.id === id);
     if (!step) return;
-    updateSteps(data.steps.filter((item) => item.id !== id && item.parentId !== id), step.cardId);
+    updateSteps(
+      data.steps.filter((item) => item.id !== id && item.parentId !== id),
+      step.cardId,
+    );
   },
 
   resetData() {
@@ -129,6 +177,7 @@ export const store = {
   /** Removes everything stored on this device; the demo world is seeded again. */
   deleteAllData() {
     clearAll();
+    broken = false;
     profile = { ...DEFAULT_PROFILE };
     data = seedData();
   },

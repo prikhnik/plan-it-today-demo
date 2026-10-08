@@ -1,3 +1,4 @@
+// @ts-check
 /** @param {import('@plan-it-today/shared-types/src/types.js').Progress} progress */
 export function renderBadge({ done, total }) {
   const state = done === 0 ? 'empty' : done === total ? 'full' : 'half';

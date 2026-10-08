@@ -1,3 +1,4 @@
+// @ts-check
 const DURATION = 2200;
 let timer;
 

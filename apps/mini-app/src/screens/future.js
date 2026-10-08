@@ -1,3 +1,4 @@
+// @ts-check
 import {
   addDays,
   addMonths,
@@ -6,6 +7,7 @@ import {
   getMonthStart,
   getUpcomingDays,
   getWeekdayTitle,
+  isPriorityShown,
   isQuest,
   toIsoDate,
 } from '@plan-it-today/shared-types';
@@ -22,9 +24,10 @@ let root = null;
 const getTomorrow = () => addDays(toIsoDate(), 1);
 
 function renderWeek(selected) {
-  const days = getUpcomingDays(toIsoDate()).map((date) => {
-    const isSelected = date === selected;
-    return `
+  const days = getUpcomingDays(toIsoDate())
+    .map((date) => {
+      const isSelected = date === selected;
+      return `
       <li class="week__item">
         <button class="week__day${isSelected ? ' week__day--selected' : ''}" type="button"
           data-action="selectDay" data-date="${date}" aria-pressed="${isSelected}">
@@ -32,7 +35,8 @@ function renderWeek(selected) {
           <span class="week__number">${Number(date.slice(8))}</span>
         </button>
       </li>`;
-  }).join('');
+    })
+    .join('');
 
   return `
     <div class="week">
@@ -45,7 +49,7 @@ function renderRow(card, steps) {
   const progress = getCardProgress(card.id, steps);
   return `
     <li class="day-list__item">
-      <button class="day-row" type="button" data-action="openCard" data-card-id="${card.id}">
+      <button class="day-row${isPriorityShown(card) ? ' day-row--priority' : ''}" type="button" data-action="openCard" data-card-id="${card.id}">
         <span class="day-row__title">${escapeHtml(card.title)}</span>
         ${isQuest(progress) ? renderBadge(progress) : ''}
         <span class="day-row__chevron" aria-hidden="true"></span>

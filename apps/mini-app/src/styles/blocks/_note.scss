@@ -27,6 +27,40 @@ $papers: (
   opacity: 0.45;
 }
 
+.note--priority {
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  // Second pencil pass over the outline: thicker line, glow in the dark theme.
+  &::before {
+    background: inherit;
+    filter: drop-shadow(var(--priority-stroke) 0 0 var(--pencil-main))
+      drop-shadow(calc(var(--priority-stroke) * -1) 0 0 var(--pencil-main))
+      drop-shadow(0 var(--priority-stroke) 0 var(--pencil-main))
+      drop-shadow(0 calc(var(--priority-stroke) * -1) 0 var(--pencil-main)) drop-shadow(0 0 8px var(--priority-glow));
+  }
+
+  &::after {
+    background: var(--priority-fill);
+    mix-blend-mode: var(--priority-blend);
+    mask: center / 100% 100% no-repeat;
+  }
+}
+
+@each $index, $image in $papers {
+  .note--priority.note--paper-#{$index}::after {
+    mask-image: var(--img-#{$image}-fill);
+  }
+}
+
 .note__title {
   display: -webkit-box;
   overflow: hidden;

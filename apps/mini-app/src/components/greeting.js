@@ -1,7 +1,7 @@
+// @ts-check
 import { escapeHtml } from '../core/html.js';
 import { getTelegramUser } from '../core/telegram.js';
-
-const PHRASE = 'Одна справа за раз.';
+import { getLaunchPhrase } from '../data/greeting-phrases.js';
 
 const ICONS = {
   moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
@@ -16,7 +16,7 @@ export function renderGreeting() {
     <header class="greeting">
       <div class="greeting__text">
         <p class="greeting__hello">${name ? `Привіт, ${escapeHtml(name)}!` : 'Привіт!'}</p>
-        <p class="greeting__phrase">${PHRASE}</p>
+        <p class="greeting__phrase">${getLaunchPhrase()}</p>
       </div>
       <button class="greeting__theme" type="button" data-action="toggleTheme"
         aria-label="${isDark ? 'Увімкнути світлу тему' : 'Увімкнути темну тему'}">

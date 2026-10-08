@@ -12,8 +12,13 @@
   --accent-text: #3b7353;
   --img-paper: url('@assets/textures/paper-light.webp');
   --paper-texture-opacity: 1;
+  --img-creases: url('@assets/textures/overlay-creases.webp');
   --creases-opacity: 0.35;
   --img-hatch: url('@assets/textures/hatch-mint-tile.webp');
+  --priority-fill: var(--accent-color);
+  --priority-blend: multiply;
+  --priority-stroke: 0.7px;
+  --priority-glow: transparent;
 
   @include assets.theme-images(light);
 
@@ -31,8 +36,13 @@
   --accent-text: #74a388;
   --img-paper: url('@assets/textures/paper-dark.webp');
   --paper-texture-opacity: 0.18;
+  --img-creases: none;
   --creases-opacity: 0;
   --img-hatch: url('@assets/textures/hatch-chalk-tile.webp');
+  --priority-fill: rgb(116 163 136 / 0.38);
+  --priority-blend: screen;
+  --priority-stroke: 0.6px;
+  --priority-glow: rgb(116 163 136 / 0.55);
 
   @include assets.theme-images(dark);
 
@@ -74,7 +84,7 @@ body {
   }
 
   &::after {
-    background: url('@assets/textures/overlay-creases.webp') center / cover no-repeat;
+    background: var(--img-creases) center / cover no-repeat;
     mix-blend-mode: overlay;
     opacity: var(--creases-opacity);
   }

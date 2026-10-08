@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * @typedef {'active' | 'done'} CardStatus
  * @typedef {'manual' | 'ai'} CardSource
@@ -14,6 +15,7 @@
  * @property {CardSource} source
  * @property {string | null} completedAt ISO date the card was finished, null while active.
  * @property {string} createdAt ISO timestamp.
+ * @property {boolean} [priority] Marked important: shown first while active; missing in old records means false.
  */
 
 /**

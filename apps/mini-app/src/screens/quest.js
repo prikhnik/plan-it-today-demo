@@ -1,3 +1,4 @@
+// @ts-check
 import {
   addMonths,
   canFinishQuest,
@@ -48,12 +49,14 @@ function renderStep(step, steps, isChild) {
   const content = `
     <span class="step__box step__box--${box}" aria-hidden="true"></span>
     <span class="step__text">${escapeHtml(step.text)}</span>`;
-  const toggle = children.length > 0
-    ? `<div class="step__toggle step__toggle--parent">${content}</div>`
-    : `<button class="step__toggle" type="button" data-action="toggleStep" data-step-id="${step.id}" aria-pressed="${isDone}">${content}</button>`;
-  const childList = children.length > 0
-    ? `<ul class="checklist checklist--children">${children.map((child) => renderStep(child, steps, true)).join('')}</ul>`
-    : '';
+  const toggle =
+    children.length > 0
+      ? `<div class="step__toggle step__toggle--parent">${content}</div>`
+      : `<button class="step__toggle" type="button" data-action="toggleStep" data-step-id="${step.id}" aria-pressed="${isDone}">${content}</button>`;
+  const childList =
+    children.length > 0
+      ? `<ul class="checklist checklist--children">${children.map((child) => renderStep(child, steps, true)).join('')}</ul>`
+      : '';
 
   return `
     <li class="checklist__item${isChild ? ' checklist__item--child' : ''}">
@@ -109,7 +112,9 @@ function renderQuest() {
   const steps = store.getSteps();
   const progress = getCardProgress(card.id, steps);
   const ratio = progress.total ? progress.done / progress.total : 0;
-  const items = getTopLevelSteps(steps, card.id).map((step) => renderStep(step, steps, false)).join('');
+  const items = getTopLevelSteps(steps, card.id)
+    .map((step) => renderStep(step, steps, false))
+    .join('');
 
   return `
     <section class="quest${card.status === 'done' ? ' quest--done' : ''}">
@@ -120,7 +125,7 @@ function renderQuest() {
         <button class="quest__edit" type="button" data-action="editCard" aria-label="Редагувати картку"></button>
       </header>
       <p class="quest__subtitle">${getSubtitle(card, progress, today)}</p>
-      <div class="progress" style="--progress: ${ratio}">
+      <div class="progress" data-progress="${ratio}">
         <span class="progress__bar"><span class="progress__fill"></span></span>
         <span class="progress__label">${progress.done} з ${progress.total}</span>
       </div>
@@ -135,7 +140,7 @@ function renderStepMenu(step) {
   const canAddChild = !step.parentId;
   return `
     <div class="modal">
-      <button class="modal__backdrop" type="button" data-action="closeModal" aria-label="Закрити"></button>
+      <button class="modal__backdrop" type="button" tabindex="-1" data-action="closeModal" aria-label="Закрити"></button>
       <div class="modal__panel sheet" role="dialog" aria-modal="true" aria-label="Дії з кроком">
         <p class="sheet__title">${escapeHtml(step.text)}</p>
         ${canAddChild ? '<button class="sheet__action" type="button" data-action="addChild">Додати підпункт</button>' : ''}
@@ -148,7 +153,7 @@ function renderStepMenu(step) {
 function renderStepEditor({ title, value }) {
   return `
     <div class="modal">
-      <button class="modal__backdrop" type="button" data-action="closeModal" aria-label="Закрити"></button>
+      <button class="modal__backdrop" type="button" tabindex="-1" data-action="closeModal" aria-label="Закрити"></button>
       <form class="modal__panel sheet" data-form="saveStep" role="dialog" aria-modal="true" aria-label="${title}">
         <p class="sheet__title">${title}</p>
         <input class="sheet__input" name="text" type="text" maxlength="${STEP_MAX_LENGTH}" value="${escapeHtml(value)}"
@@ -160,7 +165,7 @@ function renderStepEditor({ title, value }) {
 }
 
 function renderCardEditor() {
-  const { title, date, confirmDelete } = state.draft;
+  const { title, date, priority, confirmDelete } = state.draft;
   const footer = confirmDelete
     ? `
       <p class="sheet__warning">Видалити картку разом із кроками?</p>
@@ -172,15 +177,19 @@ function renderCardEditor() {
 
   return `
     <div class="modal">
-      <button class="modal__backdrop" type="button" data-action="closeModal" aria-label="Закрити"></button>
+      <button class="modal__backdrop" type="button" tabindex="-1" data-action="closeModal" aria-label="Закрити"></button>
       <form class="modal__panel sheet" data-form="saveCard" role="dialog" aria-modal="true" aria-label="Редагування картки">
         <p class="sheet__title">Редагування</p>
         <textarea class="sheet__input sheet__input--multiline" name="title" rows="3" maxlength="${TITLE_MAX_LENGTH}"
           aria-label="Назва">${escapeHtml(title)}</textarea>
-        <button class="chip sheet__chip" type="button" data-action="openCalendar">
-          <span class="chip__icon" aria-hidden="true"></span>
-          <span class="chip__label">${formatDateChip(date, toIsoDate())}</span>
-        </button>
+        <div class="sheet__chips">
+          <button class="chip" type="button" data-action="openCalendar">
+            <span class="chip__icon" aria-hidden="true"></span>
+            <span class="chip__label">${formatDateChip(date, toIsoDate())}</span>
+          </button>
+          <button class="chip chip--toggle${priority ? ' chip--on' : ''}" type="button" data-action="togglePriority"
+            aria-pressed="${priority}">Важливо</button>
+        </div>
         ${footer}
       </form>
     </div>`;
@@ -206,7 +215,7 @@ const FORM_HANDLERS = {
   saveCard(form) {
     const title = form.elements.title.value.trim();
     if (!title) return;
-    store.updateCard(state.cardId, { title, date: state.draft.date });
+    store.updateCard(state.cardId, { title, date: state.draft.date, priority: state.draft.priority });
     closeModal();
     refresh();
   },
@@ -296,8 +305,20 @@ export const questScreen = {
 
     editCard() {
       const card = getCard();
-      state.draft = { title: card.title, date: card.date < toIsoDate() ? toIsoDate() : card.date, confirmDelete: false };
+      state.draft = {
+        title: card.title,
+        date: card.date < toIsoDate() ? toIsoDate() : card.date,
+        priority: Boolean(card.priority),
+        confirmDelete: false,
+      };
       openModal(renderCardEditor());
+    },
+
+    togglePriority(el) {
+      state.draft.priority = !state.draft.priority;
+      el.classList.toggle('chip--on', state.draft.priority);
+      el.setAttribute('aria-pressed', String(state.draft.priority));
+      haptic('light');
     },
 
     openCalendar: () => openCalendar(getMonthStart(state.draft.date)),

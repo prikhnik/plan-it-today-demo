@@ -1,15 +1,28 @@
+// @ts-check
 import './styles/main.scss';
 import { getOnboardingStep } from '@plan-it-today/shared-types';
 import { renderGreeting } from './components/greeting.js';
 import { renderNavbar } from './components/navbar.js';
-import { back, canGoBack, getCurrent, navigate, onRouteChange, registerScreen } from './core/router.js';
-import { initTelegram, setBackButton } from './core/telegram.js';
-import { applyTheme, resolveTheme, watchSystemTheme } from './core/theme.js';
+import {
+  back,
+  canGoBack,
+  getCurrent,
+  loadScreen,
+  navigate,
+  onRouteChange,
+  registerLazyScreen,
+  registerScreen,
+} from './core/router.js';
+import { applyTheme, resolveTheme, switchTheme, watchSystemTheme } from './core/theme.js';
+import { initModalFocus } from './core/modal-focus.js';
+import { initMonitoring } from './core/monitoring.js';
+import { getTelegramUser, initTelegram, setBackButton } from './core/telegram.js';
 import { showToast } from './core/toast.js';
+import { track } from './core/track.js';
 import { MOCK_CARDS } from './data/mock.js';
 import { store } from './data/store.js';
-import { TERMS_VERSION } from './data/terms.js';
-import { aiDemoScreen } from './screens/ai-demo.js';
+import { TERMS_VERSION } from './data/terms-version.js';
+import { dataResetScreen } from './screens/data-reset.js';
 import { futureScreen } from './screens/future.js';
 import { helpScreen } from './screens/help.js';
 import { introScreen } from './screens/intro.js';
@@ -22,36 +35,47 @@ import { settingsDataScreen } from './screens/settings-data.js';
 import { settingsDatesScreen } from './screens/settings-dates.js';
 import { settingsThemeScreen } from './screens/settings-theme.js';
 import { settingsScreen } from './screens/settings.js';
-import { termsReadScreen, termsScreen } from './screens/terms.js';
 
 const START_SCREEN = { intro: 'intro', terms: 'terms', done: 'planner' };
 
 const app = document.getElementById('app');
 
+function refreshThemeControls() {
+  const greeting = app.querySelector('.greeting');
+  if (getCurrent().name === 'settings-theme') render();
+  else if (greeting) greeting.outerHTML = renderGreeting();
+}
+
 const GLOBAL_ACTIONS = {
   toggleTheme() {
     const next = resolveTheme(store.getProfile().theme) === 'dark' ? 'light' : 'dark';
     store.setTheme(next);
-    applyTheme(next);
-    if (getCurrent().name === 'settings-theme') render();
-    else app.querySelector('.greeting').outerHTML = renderGreeting();
+    switchTheme(next, refreshThemeControls);
   },
 };
 
 const BARE_CHROME = new Set(['onboarding', 'fullscreen']);
 let mountedScreen = null;
 
+/** @returns {HTMLElement | null} */
 const getOpenModal = () => app.querySelector('.modal');
 const syncBackButton = () => setBackButton(canGoBack() || Boolean(getOpenModal()), handleBack);
 
 function handleBack() {
   const modal = getOpenModal();
-  if (modal) modal.querySelector('.modal__backdrop')?.click();
+  if (modal) /** @type {HTMLButtonElement | null} */ (modal.querySelector('.modal__backdrop'))?.click();
   else back();
 }
 
 function render() {
-  const { screen, params } = getCurrent();
+  const { name, screen, params } = getCurrent();
+  if (!screen) {
+    loadScreen(name)
+      .then(() => getCurrent().name === name && render())
+      .catch(() => showToast('Не вдалося завантажити. Перевір з’єднання.'));
+    return;
+  }
+
   const isBare = BARE_CHROME.has(screen.chrome);
 
   mountedScreen?.unmount?.();
@@ -66,45 +90,67 @@ function render() {
   syncBackButton();
 }
 
-new MutationObserver(syncBackButton).observe(app, { childList: true, subtree: true });
+// No style attributes in markup (CSP): `data-progress` becomes the --progress variable before paint.
+function syncProgress() {
+  /** @type {NodeListOf<HTMLElement>} */ (app.querySelectorAll('[data-progress]')).forEach((element) => {
+    element.style.setProperty('--progress', element.dataset.progress);
+  });
+}
+
+new MutationObserver(() => {
+  syncBackButton();
+  syncProgress();
+}).observe(app, { childList: true, subtree: true });
+initModalFocus(app);
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && getOpenModal()) handleBack();
 });
 
 app.addEventListener('click', (event) => {
-  const target = event.target.closest('[data-toast], [data-back], [data-nav], [data-action]');
+  const target = /** @type {HTMLButtonElement | null} */ (
+    /** @type {HTMLElement} */ (event.target).closest('[data-toast], [data-back], [data-nav], [data-action]')
+  );
   if (!target || target.disabled) return;
 
   const { toast, nav, action } = target.dataset;
   if (toast) showToast(toast);
   else if ('back' in target.dataset) back();
   else if (nav) navigate(nav, {}, { reset: 'navReset' in target.dataset });
-  else if (action) (getCurrent().screen.actions?.[action] ?? GLOBAL_ACTIONS[action])?.(target, event);
+  else if (action) (getCurrent().screen?.actions?.[action] ?? GLOBAL_ACTIONS[action])?.(target, event);
 });
 
+initMonitoring(() => {
+  const user = getTelegramUser();
+  return [...store.getUserTexts(), user?.first_name, user?.last_name, user?.username].filter(Boolean);
+});
 initTelegram();
 applyTheme(store.getProfile().theme);
-watchSystemTheme();
+watchSystemTheme(refreshThemeControls);
 
+registerScreen('data-reset', dataResetScreen);
 registerScreen('intro', introScreen);
-registerScreen('terms', termsScreen);
+registerLazyScreen('terms', () => import('./screens/terms.js').then((module) => module.termsScreen));
 registerScreen('planner', plannerScreen);
 registerScreen('notebook', notebookScreen);
 registerScreen('quest', questScreen);
 registerScreen('future', futureScreen);
 registerScreen('help', helpScreen);
 registerScreen('settings', settingsScreen);
-registerScreen('settings-terms', termsReadScreen);
+registerLazyScreen('settings-terms', () => import('./screens/terms.js').then((module) => module.termsReadScreen));
 registerScreen('settings-theme', settingsThemeScreen);
 registerScreen('settings-dates', settingsDatesScreen);
 registerScreen('settings-access', settingsAccessScreen);
 registerScreen('settings-data', settingsDataScreen);
 registerScreen('settings-about', settingsAboutScreen);
-registerScreen('ai-demo', aiDemoScreen);
+registerLazyScreen('ai-demo', () => import('./screens/ai-demo.js').then((module) => module.aiDemoScreen));
 
 onRouteChange(render);
-navigate(START_SCREEN[getOnboardingStep(store.getProfile(), TERMS_VERSION)], { focus: true }, { reset: true });
+const startScreen = store.isBroken()
+  ? 'data-reset'
+  : START_SCREEN[getOnboardingStep(store.getProfile(), TERMS_VERSION)];
+navigate(startScreen, { focus: true }, { reset: true });
+track('app_open', { screen: startScreen });
 
 if (import.meta.env.DEV) {
   window.demo = { navigate, back, store, mock: MOCK_CARDS };

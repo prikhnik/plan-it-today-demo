@@ -15,3 +15,25 @@
   height: 22px;
   background: var(--img-icon-calendar) center / contain no-repeat;
 }
+
+.chip--toggle {
+  position: relative;
+  isolation: isolate;
+  justify-content: center;
+  min-width: 120px;
+  color: var(--pencil-muted);
+}
+
+.chip--on {
+  color: var(--pencil-main);
+  font-weight: 600;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    z-index: -1;
+    border-radius: 10px;
+    background: var(--img-hatch) left top / 140px repeat;
+  }
+}

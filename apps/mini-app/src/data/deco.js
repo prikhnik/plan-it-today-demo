@@ -1,4 +1,6 @@
+// @ts-check
 /** Decorative note icons by note content (spec 6.1.5, 12.5.9). First match wins. */
+/** @type {[string, RegExp][]} */
 const DECO_RULES = [
   ['pill', /аптек|лік(?!ар)|вітамін|таблет/u],
   ['cross', /лікар|лікарн|поліклінік|аналіз/u],

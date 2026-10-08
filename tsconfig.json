@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "packages/shared-types/src",
+    "packages/shared-types/test",
+    "apps/mini-app/src",
+    "apps/mini-app/scripts",
+    "apps/mini-app/e2e",
+    "apps/mini-app/test",
+    "apps/mini-app/vite.config.js",
+    "eslint.config.js"
+  ]
+}

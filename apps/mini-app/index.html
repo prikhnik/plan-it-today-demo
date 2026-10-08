@@ -1,11 +1,51 @@
 <!doctype html>
 <html lang="uk">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="color-scheme" content="light dark">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
     <title>Plan It Today</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script id="critical-assets" type="application/json">
+      __CRITICAL_ASSETS__
+    </script>
+    <script>
+      (function () {
+        var theme;
+        try {
+          theme = JSON.parse(localStorage.getItem('pit:profile') || '{}').theme;
+        } catch (error) {}
+        if (theme !== 'light' && theme !== 'dark') {
+          var webApp = window.Telegram && window.Telegram.WebApp;
+          theme =
+            webApp && webApp.initData
+              ? webApp.colorScheme
+              : matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+        }
+        document.documentElement.className = 'theme-' + (theme === 'dark' ? 'dark' : 'light');
+
+        var assets = JSON.parse(document.getElementById('critical-assets').textContent);
+        var preload = function (href, as) {
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = as;
+          link.href = href;
+          if (as === 'font') {
+            link.type = 'font/woff2';
+            link.crossOrigin = '';
+          }
+          document.head.appendChild(link);
+        };
+        assets.fonts.forEach(function (href) {
+          preload(href, 'font');
+        });
+        assets[theme === 'dark' ? 'dark' : 'light'].critical.forEach(function (href) {
+          preload(href, 'image');
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>

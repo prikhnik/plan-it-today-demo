@@ -1,3 +1,4 @@
+// @ts-check
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -23,7 +24,10 @@ const cleaning = [
 ];
 
 test('top-level steps are sorted by order', () => {
-  assert.deepEqual(getTopLevelSteps(cleaning, 'clean').map((s) => s.id), ['kitchen', 'bath', 'floor']);
+  assert.deepEqual(
+    getTopLevelSteps(cleaning, 'clean').map((s) => s.id),
+    ['kitchen', 'bath', 'floor'],
+  );
 });
 
 test('parent is done only when all children are done', () => {

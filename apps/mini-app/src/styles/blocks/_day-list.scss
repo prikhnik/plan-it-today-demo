@@ -9,6 +9,14 @@
   text-align: left;
 }
 
+.day-row--priority {
+  padding-inline: 10px;
+  border-bottom: 2px solid var(--pencil-main);
+  border-radius: 6px 6px 0 0;
+  background: var(--priority-fill);
+  box-shadow: 0 0 12px var(--priority-glow);
+}
+
 .day-row__title {
   flex: 1;
   min-width: 0;

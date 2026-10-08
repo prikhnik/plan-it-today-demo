@@ -1,3 +1,4 @@
+// @ts-check
 import { navigate } from '../core/router.js';
 import { store } from '../data/store.js';
 
@@ -11,14 +12,16 @@ export const introScreen = {
   chrome: 'onboarding',
 
   render() {
-    const points = POINTS.map(({ icon, title, text }) => `
+    const points = POINTS.map(
+      ({ icon, title, text }) => `
       <li class="onboarding__point">
         <span class="onboarding__point-icon onboarding__point-icon--${icon}" aria-hidden="true"></span>
         <span class="onboarding__point-text">
           <span class="onboarding__point-title">${title}</span>
           ${text}
         </span>
-      </li>`).join('');
+      </li>`,
+    ).join('');
 
     return `
       <section class="onboarding">

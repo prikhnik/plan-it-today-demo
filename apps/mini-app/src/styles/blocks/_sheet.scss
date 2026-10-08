@@ -45,6 +45,9 @@
   text-align: center;
 }
 
-.sheet__chip {
-  align-self: center;
+.sheet__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }

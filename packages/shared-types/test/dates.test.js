@@ -1,3 +1,4 @@
+// @ts-check
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
@@ -111,7 +112,10 @@ test('upcoming days start tomorrow', () => {
 
 test('date phrase is removed from the title', () => {
   assert.deepEqual(extractNoteDate('зібрати речі, завтра', TODAY), { title: 'зібрати речі', date: '2026-10-09' });
-  assert.deepEqual(extractNoteDate('Завтра подзвонити в банк', TODAY), { title: 'Подзвонити в банк', date: '2026-10-09' });
+  assert.deepEqual(extractNoteDate('Завтра подзвонити в банк', TODAY), {
+    title: 'Подзвонити в банк',
+    date: '2026-10-09',
+  });
   assert.equal(extractNoteDate('купити хліб завтра ввечері', TODAY).title, 'купити хліб ввечері');
   assert.equal(extractNoteDate('аптека, у пт, ліки 600 грн', TODAY).title, 'аптека, ліки 600 грн');
   assert.equal(extractNoteDate('оплата 15.10.', TODAY).title, 'оплата');

@@ -1,0 +1,18 @@
+.theme-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg-paper);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.theme-veil--visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-veil {
+    transition: none;
+  }
+}
