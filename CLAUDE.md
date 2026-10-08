@@ -155,8 +155,9 @@ Telegram Mini App «Plan It Today». Заметка превращается в 
 2. `docs/design/ui-reference.png` и `docs/design/README.md`: референс дизайна.
 3. `docs/new-project-kickoff-prompt.md`: стартовый промпт для Claude Code, адаптирован под этот проект.
 4. `docs/design/assets/`: готовый пак ассетов, нарезан из листов ChatGPT. `light/` и `dark/` (по 66 PNG, одинаковые имена, прозрачный фон: графит или мел), `textures/` (6 текстур без прозрачности: бумага светлая и тёмная, оверлеи creases и pencil-grain на сером #808080 для multiply/overlay, штриховки-тайлы), `_sheets/` (исходные листы), `README.md` (список файлов и размеров).
-5. `docs/deploy.md`: деплой (Vercel для демо, Cloudflare Pages для коммерции, Menu Button в BotFather).
+5. `docs/deploy.md`: деплой (Vercel для демо, Cloudflare Pages для коммерции, Menu Button в BotFather, `VITE_SENTRY_DSN`, CSP-хеш, чек-лист перед раздачей ссылки).
 6. `CLAUDE.md`: этот файл.
+7. `docs/prompt-claude-code-*.md`: промпты Cowork для Claude Code по доработкам; `reports/`: отчёты Claude Code после каждого этапа (последний: `reports/2026-10-09-edit-button-and-docs.md`).
 
 ## Ближайшие шаги автора
 
@@ -164,3 +165,5 @@ Telegram Mini App «Plan It Today». Заметка превращается в 
 2. Обновить референс при необходимости (решения раздела 12.5 спеки).
 3. Исследовать ШІ-подписку (провайдер, цена, оплата, приватность) перед этапом ШІ.
 4. Начать демо на моках только по команде автора.
+5. Проверить демо в клиентах Telegram (iOS, Android, Desktop, Web) на ошибки CSP; ручная проверка контраста (axe его на картинках не считает).
+6. Q55: завести Sentry (DSN в Vercel → `VITE_SENTRY_DSN`) и выбрать аналитику; перед включением аналитики обновить условия (v1.2).
