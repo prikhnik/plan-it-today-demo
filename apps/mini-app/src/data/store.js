@@ -1,6 +1,13 @@
-import { getPlannerCards, toIsoDate } from '@plan-it-today/shared-types';
+import {
+  getCardProgress,
+  getChildSteps,
+  getDayCards,
+  getPlannerCards,
+  shouldReopen,
+  toIsoDate,
+} from '@plan-it-today/shared-types';
 import { createId } from '../core/id.js';
-import { readJson, writeJson } from '../core/storage.js';
+import { clearAll, readJson, writeJson } from '../core/storage.js';
 import { createMockData } from './mock.js';
 
 const PROFILE_KEY = 'profile';
@@ -33,6 +40,22 @@ function updateData(patch) {
   writeJson(DATA_KEY, data);
 }
 
+function patchCard(id, patch) {
+  updateData({ cards: data.cards.map((card) => (card.id === id ? { ...card, ...patch } : card)) });
+}
+
+function syncCardStatus(cardId) {
+  const card = data.cards.find((item) => item.id === cardId);
+  if (card && shouldReopen(card, getCardProgress(cardId, data.steps))) {
+    patchCard(cardId, { status: 'active', completedAt: null });
+  }
+}
+
+function updateSteps(steps, cardId) {
+  updateData({ steps });
+  syncCardStatus(cardId);
+}
+
 export const store = {
   getProfile: () => profile,
   markIntroSeen: () => updateProfile({ introSeen: true }),
@@ -40,7 +63,10 @@ export const store = {
   setTheme: (theme) => updateProfile({ theme }),
 
   getSteps: () => data.steps,
+  getCard: (id) => data.cards.find((card) => card.id === id) ?? null,
   getPlannerCards: (today) => getPlannerCards(data.cards, today),
+  getDayCards: (day) => getDayCards(data.cards, day),
+  getCounts: () => ({ cards: data.cards.length, steps: data.steps.length }),
 
   addCard({ title, date }) {
     const card = {
@@ -56,7 +82,55 @@ export const store = {
     return card;
   },
 
+  updateCard(id, patch) {
+    patchCard(id, patch);
+  },
+
+  completeCard(id) {
+    patchCard(id, { status: 'done', completedAt: toIsoDate() });
+  },
+
+  reopenCard(id) {
+    patchCard(id, { status: 'active', completedAt: null });
+  },
+
+  deleteCard(id) {
+    updateData({
+      cards: data.cards.filter((card) => card.id !== id),
+      steps: data.steps.filter((step) => step.cardId !== id),
+    });
+  },
+
+  addStep(cardId, text, parentId = null) {
+    const siblings = data.steps.filter((step) => step.cardId === cardId && step.parentId === parentId);
+    const order = siblings.reduce((max, step) => Math.max(max, step.order + 1), 0);
+    updateSteps([...data.steps, { id: createId(), cardId, parentId, text, done: false, order }], cardId);
+  },
+
+  toggleStep(id) {
+    const step = data.steps.find((item) => item.id === id);
+    if (!step || getChildSteps(data.steps, id).length > 0) return;
+    updateSteps(data.steps.map((item) => (item.id === id ? { ...item, done: !item.done } : item)), step.cardId);
+  },
+
+  updateStepText(id, text) {
+    updateData({ steps: data.steps.map((step) => (step.id === id ? { ...step, text } : step)) });
+  },
+
+  deleteStep(id) {
+    const step = data.steps.find((item) => item.id === id);
+    if (!step) return;
+    updateSteps(data.steps.filter((item) => item.id !== id && item.parentId !== id), step.cardId);
+  },
+
   resetData() {
+    data = seedData();
+  },
+
+  /** Removes everything stored on this device; the demo world is seeded again. */
+  deleteAllData() {
+    clearAll();
+    profile = { ...DEFAULT_PROFILE };
     data = seedData();
   },
 };

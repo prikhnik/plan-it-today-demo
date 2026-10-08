@@ -1,0 +1,27 @@
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress__bar {
+  position: relative;
+  flex: 1;
+  height: 34px;
+  border: 10px solid transparent;
+  border-radius: 17px;
+  border-image: var(--img-progress-empty) 42 / 10px stretch;
+}
+
+.progress__fill {
+  position: absolute;
+  inset: 0;
+  width: var(--progress);
+  border-radius: 6px;
+  background: var(--img-hatch) left top / 140px repeat;
+}
+
+.progress__label {
+  font-size: 20px;
+  white-space: nowrap;
+}

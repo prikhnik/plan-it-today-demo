@@ -7,7 +7,7 @@ import {
   toIsoDate,
 } from '@plan-it-today/shared-types';
 import { renderCalendar } from '../components/calendar.js';
-import { navigate } from '../core/router.js';
+import { back, navigate } from '../core/router.js';
 import { showToast } from '../core/toast.js';
 import { store } from '../data/store.js';
 
@@ -100,7 +100,7 @@ export const notebookScreen = {
       if (!title) return;
       const today = toIsoDate();
       store.addCard({ title, date: state.date });
-      navigate('planner', {}, { reset: true });
+      if (!back()) navigate('planner', {}, { reset: true });
       showToast(state.date === today ? 'Додано в планер' : `Додано на ${formatDayLabel(state.date, today)}`);
     },
 

@@ -17,3 +17,13 @@ export function writeJson(key, value) {
     return false;
   }
 }
+
+export function clearAll() {
+  try {
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith(PREFIX))
+      .forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // Storage unavailable: nothing to clear.
+  }
+}

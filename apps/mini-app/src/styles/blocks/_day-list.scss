@@ -1,0 +1,26 @@
+.day-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 2px;
+  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+  text-align: left;
+}
+
+.day-row__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.day-row__chevron {
+  flex-shrink: 0;
+  width: 12px;
+  height: 20px;
+  background: var(--img-icon-chevron-right) center / contain no-repeat;
+}

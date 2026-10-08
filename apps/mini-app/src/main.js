@@ -1,7 +1,7 @@
 import './styles/main.scss';
 import { getOnboardingStep } from '@plan-it-today/shared-types';
+import { renderGreeting } from './components/greeting.js';
 import { renderNavbar } from './components/navbar.js';
-import { renderTopbar } from './components/topbar.js';
 import { back, canGoBack, getCurrent, navigate, onRouteChange, registerScreen } from './core/router.js';
 import { initTelegram, setBackButton } from './core/telegram.js';
 import { applyTheme, watchSystemTheme } from './core/theme.js';
@@ -14,6 +14,12 @@ import { helpScreen } from './screens/help.js';
 import { introScreen } from './screens/intro.js';
 import { notebookScreen } from './screens/notebook.js';
 import { plannerScreen } from './screens/planner.js';
+import { questScreen } from './screens/quest.js';
+import { settingsAboutScreen } from './screens/settings-about.js';
+import { settingsAccessScreen } from './screens/settings-access.js';
+import { settingsDataScreen } from './screens/settings-data.js';
+import { settingsDatesScreen } from './screens/settings-dates.js';
+import { settingsThemeScreen } from './screens/settings-theme.js';
 import { settingsScreen } from './screens/settings.js';
 import { termsReadScreen, termsScreen } from './screens/terms.js';
 
@@ -28,9 +34,9 @@ function render() {
 
   app.className = `app app--${screen.chrome}`;
   app.innerHTML = `
-    ${isOnboarding ? '' : renderTopbar()}
+    ${isOnboarding ? '' : renderGreeting()}
     <main class="app__main">${screen.render(params)}</main>
-    ${isOnboarding ? '' : renderNavbar(screen.tab)}`;
+    ${isOnboarding ? '' : renderNavbar(params.tab ?? screen.tab)}`;
 
   screen.mount?.(app.querySelector('.app__main'), params);
   setBackButton(canGoBack(), handleBack);
@@ -55,14 +61,20 @@ registerScreen('intro', introScreen);
 registerScreen('terms', termsScreen);
 registerScreen('planner', plannerScreen);
 registerScreen('notebook', notebookScreen);
+registerScreen('quest', questScreen);
 registerScreen('future', futureScreen);
 registerScreen('help', helpScreen);
 registerScreen('settings', settingsScreen);
 registerScreen('settings-terms', termsReadScreen);
+registerScreen('settings-theme', settingsThemeScreen);
+registerScreen('settings-dates', settingsDatesScreen);
+registerScreen('settings-access', settingsAccessScreen);
+registerScreen('settings-data', settingsDataScreen);
+registerScreen('settings-about', settingsAboutScreen);
 
 onRouteChange(render);
 navigate(START_SCREEN[getOnboardingStep(store.getProfile(), TERMS_VERSION)], { focus: true }, { reset: true });
 
 if (import.meta.env.DEV) {
-  window.demo = { navigate, store, mock: MOCK_CARDS };
+  window.demo = { navigate, back, store, mock: MOCK_CARDS };
 }

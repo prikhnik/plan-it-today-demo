@@ -1,0 +1,18 @@
+.howto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding-left: 24px;
+  font-size: 20px;
+}
+
+.howto__step::marker {
+  font-weight: 700;
+}
+
+.howto__title {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+}

@@ -8,8 +8,9 @@ $tabs: (
 .navbar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 8px 4px calc(6px + env(safe-area-inset-bottom));
-  background: var(--img-divider-dashed) center top / calc(100% - 32px) 9px no-repeat;
+  margin: 0 16px;
+  padding: 8px 0 calc(6px + env(safe-area-inset-bottom));
+  border-top: 1.5px solid var(--line-color);
 }
 
 .navbar__item {

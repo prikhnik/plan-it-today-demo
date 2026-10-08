@@ -1,0 +1,90 @@
+.quest {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+.quest__header {
+  position: relative;
+}
+
+.quest__banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  padding: 0 4px;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 16px 52px;
+  border-image: var(--img-scroll-banner) 30 100 fill / 16px 52px stretch;
+}
+
+.quest__title {
+  max-height: 100%;
+  overflow-y: auto;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.quest__edit {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  width: 44px;
+  height: 44px;
+  background: var(--img-icon-edit) center / 24px no-repeat;
+}
+
+.quest__subtitle {
+  margin-top: -4px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.quest__add-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 56px;
+  padding: 0 4px;
+  border: 10px solid transparent;
+  border-image: var(--img-input-field) 40 / 10px stretch;
+}
+
+.quest__add-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 21px;
+  outline: none;
+
+  &::placeholder {
+    color: var(--pencil-muted);
+  }
+}
+
+.quest__add-submit {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--img-icon-plus) center / 20px no-repeat;
+}
+
+.quest__finish {
+  padding: 6px 0 8px;
+}
+
+.quest__missing {
+  padding: 40px 0 10px;
+  font-size: 22px;
+  text-align: center;
+}

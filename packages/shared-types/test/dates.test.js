@@ -9,6 +9,8 @@ import {
   formatMonthTitle,
   getMonthGrid,
   getMonthStart,
+  getUpcomingDays,
+  getWeekdayTitle,
   getWeekdayIndex,
   parseDateFromText,
   resolveNoteDate,
@@ -96,4 +98,12 @@ test('month grid starts on Monday and pads with null', () => {
   assert.deepEqual(grid[0], [null, null, null, '2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04']);
   assert.deepEqual(grid[4], ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31', null]);
   assert.equal(getMonthGrid('2027-02-01').flat().filter(Boolean).length, 28);
+});
+
+test('upcoming days start tomorrow', () => {
+  const days = getUpcomingDays(TODAY);
+  assert.equal(days.length, 7);
+  assert.equal(days[0], '2026-10-09');
+  assert.equal(days[6], '2026-10-15');
+  assert.equal(getWeekdayTitle(days[0]), 'Пт');
 });

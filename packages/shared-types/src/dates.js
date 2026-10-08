@@ -176,3 +176,11 @@ export function getMonthGrid(iso) {
   while (cells.length % 7) cells.push(null);
   return Array.from({ length: cells.length / 7 }, (_, week) => cells.slice(week * 7, week * 7 + 7));
 }
+
+/** Days after today for the «Майбутнє» strip. */
+export function getUpcomingDays(today, count = 7) {
+  return Array.from({ length: count }, (_, index) => addDays(today, index + 1));
+}
+
+/** «Пт» for the week strip. */
+export const getWeekdayTitle = (iso) => WEEKDAY_TITLES[getWeekdayIndex(iso)];

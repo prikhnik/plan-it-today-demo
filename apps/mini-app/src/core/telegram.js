@@ -36,3 +36,19 @@ export function setBackButton(visible, handler) {
     webApp.BackButton.hide();
   }
 }
+
+/** @returns {{ id: number, first_name: string, last_name?: string, username?: string } | null} */
+export function getTelegramUser() {
+  return isTelegram ? webApp.initDataUnsafe?.user ?? null : null;
+}
+
+export function openLink(url) {
+  if (isTelegram) webApp.openLink(url);
+  else window.open(url, '_blank', 'noopener');
+}
+
+export const canAddToHomeScreen = () => supports('8.0') && typeof webApp.addToHomeScreen === 'function';
+
+export function addToHomeScreen() {
+  if (canAddToHomeScreen()) webApp.addToHomeScreen();
+}

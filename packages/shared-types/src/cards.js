@@ -24,3 +24,22 @@ export function getPlannerCards(cards, today) {
     ...visible.filter((card) => card.status === 'done').sort(byNewest),
   ];
 }
+
+/**
+ * A finished card goes back to work when its steps no longer allow finishing
+ * (a step was unchecked or a new one added).
+ * @param {Card} card
+ * @param {import('./types.js').Progress} progress
+ */
+export function shouldReopen(card, progress) {
+  return card.status === 'done' && progress.total > 0 && progress.done < progress.total;
+}
+
+/**
+ * Active cards planned for a given future day, newest first.
+ * @param {Card[]} cards
+ * @param {string} day ISO date.
+ */
+export function getDayCards(cards, day) {
+  return cards.filter((card) => card.status === 'active' && card.date === day).sort(byNewest);
+}

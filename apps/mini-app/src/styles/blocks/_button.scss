@@ -47,3 +47,9 @@
   font-size: 20px;
   white-space: nowrap;
 }
+
+.button__icon--external {
+  width: 18px;
+  height: 18px;
+  background-image: var(--img-icon-external-link);
+}

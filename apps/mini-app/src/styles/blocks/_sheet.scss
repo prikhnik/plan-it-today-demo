@@ -1,0 +1,50 @@
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sheet__title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.sheet__action {
+  min-height: 48px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.sheet__action--danger {
+  text-decoration: underline;
+}
+
+.sheet__input {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 8px;
+  border: 10px solid transparent;
+  border-image: var(--img-input-field) 40 / 10px stretch;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 22px;
+  outline: none;
+}
+
+.sheet__input--multiline {
+  padding: 6px 8px;
+  line-height: 1.25;
+  resize: none;
+}
+
+.sheet__warning {
+  font-size: 21px;
+  text-align: center;
+}
+
+.sheet__chip {
+  align-self: center;
+}

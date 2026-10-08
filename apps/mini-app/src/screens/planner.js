@@ -17,7 +17,7 @@ function renderNote(card, progress, index) {
 
   return `
     <li class="planner__item">
-      <button class="note${modifiers}" type="button" data-toast="Скоро">
+      <button class="note${modifiers}" type="button" data-action="openCard" data-card-id="${card.id}">
         <span class="note__title">${escapeHtml(card.title)}</span>
         ${isQuest(progress) ? renderBadge(progress) : ''}
       </button>
@@ -70,5 +70,9 @@ export const plannerScreen = {
       addFromQuickField(form.elements.text.value);
     });
     if (params.focus) form.elements.text.focus();
+  },
+
+  actions: {
+    openCard: (el) => navigate('quest', { cardId: el.dataset.cardId }),
   },
 };

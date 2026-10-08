@@ -1,21 +1,21 @@
 import { WEEKDAY_TITLES, formatMonthTitle, getMonthGrid, getMonthStart } from '@plan-it-today/shared-types';
 
-function renderDay(date, { selected, today }) {
+function renderDay(date, { selected, today, min }) {
   if (!date) return '<span class="calendar__day calendar__day--empty"></span>';
   const modifiers = [date === today && 'today', date === selected && 'selected']
     .filter(Boolean)
     .map((modifier) => ` calendar__day--${modifier}`)
     .join('');
-  return `<button class="calendar__day${modifiers}" type="button" data-action="calendarPick" data-date="${date}"${date < today ? ' disabled' : ''}>${Number(date.slice(8))}</button>`;
+  return `<button class="calendar__day${modifiers}" type="button" data-action="calendarPick" data-date="${date}"${date < min ? ' disabled' : ''}>${Number(date.slice(8))}</button>`;
 }
 
 /**
- * Month picker in a modal. Past days are disabled.
+ * Month picker in a modal. Days before `min` (today by default) are disabled.
  * Actions: calendarPrev, calendarNext, calendarPick (data-date), calendarClose.
  */
-export function renderCalendar({ month, selected, today }) {
-  const canGoBack = month > getMonthStart(today);
-  const days = getMonthGrid(month).flat().map((date) => renderDay(date, { selected, today })).join('');
+export function renderCalendar({ month, selected, today, min = today }) {
+  const canGoBack = month > getMonthStart(min);
+  const days = getMonthGrid(month).flat().map((date) => renderDay(date, { selected, today, min })).join('');
   const weekdays = WEEKDAY_TITLES.map((title) => `<span class="calendar__weekday">${title}</span>`).join('');
 
   return `

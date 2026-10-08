@@ -1,0 +1,16 @@
+.greeting {
+  margin: 0 16px;
+  padding: 8px 2px 8px;
+  border-bottom: 1.5px solid var(--line-color);
+}
+
+.greeting__hello {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.greeting__phrase {
+  font-size: 19px;
+}

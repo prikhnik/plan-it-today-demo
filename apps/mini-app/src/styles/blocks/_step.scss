@@ -1,0 +1,66 @@
+$boxes: (
+  empty: checkbox,
+  checked: checkbox-checked,
+  partial: checkbox-partial,
+);
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step__toggle {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 4px 0;
+  text-align: left;
+}
+
+.step__toggle--parent {
+  cursor: default;
+}
+
+.step__box {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: center / contain no-repeat;
+}
+
+@each $state, $image in $boxes {
+  .step__box--#{$state} {
+    background-image: var(--img-#{$image});
+  }
+}
+
+.step__text {
+  font-size: 22px;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.step--done .step__text {
+  color: var(--pencil-muted);
+  text-decoration: line-through;
+}
+
+.step__more {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--img-icon-more) center / 24px no-repeat;
+}
+
+.checklist__item--child .step__box {
+  width: 24px;
+  height: 24px;
+}
+
+.checklist__item--child .step__text {
+  font-size: 20px;
+}

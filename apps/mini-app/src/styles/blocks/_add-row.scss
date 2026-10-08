@@ -1,0 +1,10 @@
+.add-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 6px;
+  background: var(--img-dotted-row) center bottom / 100% 6px no-repeat;
+  font-size: 21px;
+  text-align: left;
+}

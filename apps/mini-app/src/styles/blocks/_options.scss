@@ -1,0 +1,30 @@
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 4px;
+  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+  text-align: left;
+}
+
+.option__box {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: var(--img-checkbox) center / contain no-repeat;
+}
+
+.option--selected .option__box {
+  background-image: var(--img-checkbox-checked);
+}
+
+.option__label {
+  font-size: 22px;
+}
+
+.option__hint {
+  color: var(--pencil-muted);
+  font-size: 18px;
+}

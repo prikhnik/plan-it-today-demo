@@ -1,0 +1,23 @@
+.facts {
+  margin: 0;
+}
+
+.facts__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 4px;
+  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+}
+
+.facts__term {
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.facts__value {
+  margin: 0;
+  font-size: 20px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}

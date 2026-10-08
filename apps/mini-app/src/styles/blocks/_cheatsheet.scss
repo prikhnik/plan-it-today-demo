@@ -1,0 +1,19 @@
+.cheatsheet__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 4px;
+  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+}
+
+.cheatsheet__phrase {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.cheatsheet__result {
+  font-size: 20px;
+  text-align: right;
+}

@@ -1,0 +1,49 @@
+.week {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.week__days {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.week__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 60px;
+  padding: 4px 0;
+}
+
+.week__weekday {
+  color: var(--pencil-muted);
+  font-size: 17px;
+}
+
+.week__number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 34px;
+  font-size: 21px;
+}
+
+.week__day--selected .week__number {
+  background: var(--img-today-loop) center / contain no-repeat;
+  font-weight: 700;
+}
+
+.week__calendar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  background: var(--img-icon-calendar) center / 26px no-repeat;
+}

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getPlannerCards, isOnPlanner } from '../src/cards.js';
+import { getDayCards, getPlannerCards, isOnPlanner, shouldReopen } from '../src/cards.js';
 
 const TODAY = '2026-10-08';
 const card = (id, props = {}) => ({
@@ -27,4 +27,22 @@ test('active newest first, done at the bottom', () => {
     card('future', { date: '2026-10-10' }),
   ];
   assert.deepEqual(getPlannerCards(cards, TODAY).map((c) => c.id), ['new', 'old', 'done']);
+});
+
+test('done card reopens only when its steps are incomplete', () => {
+  const done = card('q', { status: 'done', completedAt: TODAY });
+  assert.equal(shouldReopen(done, { done: 2, total: 3 }), true);
+  assert.equal(shouldReopen(done, { done: 3, total: 3 }), false);
+  assert.equal(shouldReopen(done, { done: 0, total: 0 }), false);
+  assert.equal(shouldReopen(card('a'), { done: 0, total: 3 }), false);
+});
+
+test('day cards: active only, exact day, newest first', () => {
+  const cards = [
+    card('old', { date: '2026-10-09', createdAt: '2026-10-08T08:00:00.000Z' }),
+    card('new', { date: '2026-10-09', createdAt: '2026-10-08T10:00:00.000Z' }),
+    card('done', { date: '2026-10-09', status: 'done', completedAt: TODAY }),
+    card('other', { date: '2026-10-10' }),
+  ];
+  assert.deepEqual(getDayCards(cards, '2026-10-09').map((c) => c.id), ['new', 'old']);
 });

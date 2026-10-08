@@ -33,3 +33,18 @@
 .screen__illustration--help {
   background-image: var(--img-illus-help);
 }
+
+.screen__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 20px;
+  font-size: 19px;
+  list-style: disc;
+}
+
+.screen__link {
+  min-height: 48px;
+  font-size: 21px;
+  text-decoration: underline;
+}
