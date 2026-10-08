@@ -1,4 +1,6 @@
 .button {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,15 +22,26 @@
 
   &:disabled {
     border-image-source: var(--img-btn-disabled);
-    background: none;
     color: var(--pencil-muted);
     cursor: default;
   }
 }
 
 .button--primary {
-  background: var(--img-hatch) left top / 140px repeat padding-box;
   font-weight: 600;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -9px;
+    z-index: -1;
+    border-radius: 11px;
+    background: var(--img-hatch) left top / 140px repeat;
+  }
+
+  &:disabled::before {
+    content: none;
+  }
 }
 
 .button__icon {
