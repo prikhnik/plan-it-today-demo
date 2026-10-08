@@ -1,0 +1,35 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.screen--centered {
+  align-items: center;
+  text-align: center;
+}
+
+.screen__title {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.screen__text {
+  font-size: 21px;
+}
+
+.screen__note {
+  color: var(--pencil-muted);
+  font-size: 18px;
+}
+
+.screen__illustration {
+  width: 180px;
+  aspect-ratio: 1;
+  background: center / contain no-repeat;
+}
+
+.screen__illustration--help {
+  background-image: var(--img-illus-help);
+}

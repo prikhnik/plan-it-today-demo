@@ -1,0 +1,86 @@
+@use 'assets';
+
+:root,
+.theme-light {
+  --bg-paper: #f7f4ee;
+  --pencil-main: #3a3a3a;
+  --pencil-muted: #8a8a8a;
+  --accent-color: #c4ebd0;
+  --img-paper: url('@assets/textures/paper-light.webp');
+  --img-hatch: url('@assets/textures/hatch-mint-tile.webp');
+
+  @include assets.theme-images(light);
+
+  color-scheme: light;
+}
+
+.theme-dark {
+  --bg-paper: #1c1c1e;
+  --pencil-main: #e5e5e7;
+  --pencil-muted: #a1a1a6;
+  --accent-color: #74a388;
+  --img-paper: url('@assets/textures/paper-dark.webp');
+  --img-hatch: url('@assets/textures/hatch-chalk-tile.webp');
+
+  @include assets.theme-images(dark);
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-paper) var(--img-paper) repeat;
+  background-size: 250px;
+  color: var(--pencil-main);
+  font-family: 'Caveat', 'Segoe Print', cursive;
+  font-size: 20px;
+  line-height: 1.25;
+  -webkit-tap-highlight-color: transparent;
+
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: url('@assets/textures/overlay-creases.webp') center / cover no-repeat;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+}
+
+h1,
+h2,
+p,
+ul {
+  margin: 0;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px dashed var(--pencil-muted);
+  outline-offset: 3px;
+}

@@ -1,0 +1,31 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 12px;
+  border: 14px solid transparent;
+  border-radius: 26px;
+  border-image: var(--img-btn-secondary) 46 / 14px stretch;
+  color: var(--pencil-main);
+  font-size: 23px;
+  text-align: center;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    border-image-source: var(--img-btn-disabled);
+    background: none;
+    color: var(--pencil-muted);
+    cursor: default;
+  }
+}
+
+.button--primary {
+  background: var(--img-hatch) left top / 140px repeat padding-box;
+  font-weight: 600;
+}

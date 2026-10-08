@@ -1,0 +1,29 @@
+$theme-images: (
+  btn-secondary,
+  btn-disabled,
+  checkbox-checked,
+  checkbox-partial,
+  divider-dashed,
+  icon-chevron-right,
+  icon-pencil,
+  illus-board-empty,
+  illus-demo-intro,
+  illus-help,
+  illus-planner-empty,
+  nav-board,
+  nav-board-active,
+  nav-help,
+  nav-help-active,
+  nav-planner,
+  nav-planner-active,
+  nav-settings,
+  nav-settings-active,
+  row-frame,
+  underline-mint
+);
+
+@mixin theme-images($theme) {
+  @each $name in $theme-images {
+    --img-#{$name}: url('@assets/#{$theme}/#{$name}.webp');
+  }
+}

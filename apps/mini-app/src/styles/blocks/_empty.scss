@@ -1,0 +1,26 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 0;
+  text-align: center;
+}
+
+.empty__illustration {
+  width: 200px;
+  aspect-ratio: 1;
+  background: center / contain no-repeat;
+}
+
+.empty__illustration--planner {
+  background-image: var(--img-illus-board-empty);
+}
+
+.empty__illustration--future {
+  background-image: var(--img-illus-planner-empty);
+}
+
+.empty__text {
+  font-size: 22px;
+}

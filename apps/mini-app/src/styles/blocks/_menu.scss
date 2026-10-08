@@ -1,0 +1,18 @@
+.menu__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 4px;
+  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+  font-size: 22px;
+  text-align: left;
+}
+
+.menu__chevron {
+  flex-shrink: 0;
+  width: 14px;
+  height: 22px;
+  background: var(--img-icon-chevron-right) center / contain no-repeat;
+}

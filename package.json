@@ -1,0 +1,15 @@
+{
+  "name": "plan-it-today",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter mini-app dev",
+    "build": "pnpm --filter mini-app build",
+    "preview": "pnpm --filter mini-app preview",
+    "test": "pnpm -r test",
+    "assets": "python3 scripts/prepare-assets.py"
+  }
+}
