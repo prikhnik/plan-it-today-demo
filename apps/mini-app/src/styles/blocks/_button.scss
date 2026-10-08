@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   min-height: 58px;
   padding: 0 12px;
@@ -10,7 +10,8 @@
   border-radius: 26px;
   border-image: var(--img-btn-secondary) 46 / 14px stretch;
   color: var(--pencil-main);
-  font-size: 23px;
+  font-size: 22px;
+  line-height: 1.1;
   text-align: center;
 
   &:active:not(:disabled) {
@@ -28,4 +29,21 @@
 .button--primary {
   background: var(--img-hatch) left top / 140px repeat padding-box;
   font-weight: 600;
+}
+
+.button__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: center / contain no-repeat;
+}
+
+.button__icon--sparkle {
+  background-image: var(--img-icon-sparkle);
+}
+
+.button--compact {
+  padding: 0 4px;
+  font-size: 20px;
+  white-space: nowrap;
 }

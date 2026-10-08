@@ -1,0 +1,8 @@
+.tag {
+  padding: 0 4px;
+  border: 7px solid transparent;
+  border-image: var(--img-tag-frame) 36 / 7px stretch;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+}

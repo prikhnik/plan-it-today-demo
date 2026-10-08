@@ -36,7 +36,3 @@ export function setBackButton(visible, handler) {
     webApp.BackButton.hide();
   }
 }
-
-export function closeApp() {
-  webApp?.close();
-}

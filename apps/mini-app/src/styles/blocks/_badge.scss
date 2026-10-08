@@ -1,0 +1,24 @@
+$states: (
+  empty: badge-empty,
+  half: badge-half,
+  full: badge-full,
+);
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 19px;
+}
+
+.badge__icon {
+  width: 20px;
+  height: 20px;
+  background: center / contain no-repeat;
+}
+
+@each $state, $image in $states {
+  .badge--#{$state} .badge__icon {
+    background-image: var(--img-#{$image});
+  }
+}

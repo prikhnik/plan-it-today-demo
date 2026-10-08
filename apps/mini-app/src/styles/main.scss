@@ -4,6 +4,15 @@
 @use 'blocks/topbar';
 @use 'blocks/navbar';
 @use 'blocks/button';
+@use 'blocks/quick-add';
+@use 'blocks/planner';
+@use 'blocks/note';
+@use 'blocks/badge';
+@use 'blocks/notebook';
+@use 'blocks/chip';
+@use 'blocks/tag';
+@use 'blocks/modal';
+@use 'blocks/calendar';
 @use 'blocks/screen';
 @use 'blocks/empty';
 @use 'blocks/menu';

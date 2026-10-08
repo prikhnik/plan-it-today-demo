@@ -2,9 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   addDays,
+  addMonths,
   diffDays,
   formatDateChip,
   formatDayLabel,
+  formatMonthTitle,
+  getMonthGrid,
+  getMonthStart,
   getWeekdayIndex,
   parseDateFromText,
   resolveNoteDate,
@@ -77,4 +81,19 @@ test('date chip labels', () => {
   assert.equal(formatDateChip('2026-10-09', TODAY), 'Завтра, пт 9 жовтня');
   assert.equal(formatDateChip('2026-10-12', TODAY), 'пн 12 жовтня');
   assert.equal(formatDayLabel('2027-01-04', TODAY), 'пн 4 січня 2027');
+});
+
+test('month helpers', () => {
+  assert.equal(getMonthStart(TODAY), '2026-10-01');
+  assert.equal(addMonths('2026-12-01', 1), '2027-01-01');
+  assert.equal(addMonths('2026-01-01', -1), '2025-12-01');
+  assert.equal(formatMonthTitle(TODAY), 'Жовтень 2026');
+});
+
+test('month grid starts on Monday and pads with null', () => {
+  const grid = getMonthGrid(TODAY);
+  assert.equal(grid.length, 5);
+  assert.deepEqual(grid[0], [null, null, null, '2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04']);
+  assert.deepEqual(grid[4], ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31', null]);
+  assert.equal(getMonthGrid('2027-02-01').flat().filter(Boolean).length, 28);
 });

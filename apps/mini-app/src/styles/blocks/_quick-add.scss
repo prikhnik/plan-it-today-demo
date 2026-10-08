@@ -1,0 +1,47 @@
+.quick-add {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quick-add__field {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 58px;
+  padding: 0 6px;
+  border: 12px solid transparent;
+  border-image: var(--img-input-field) 40 / 12px stretch;
+}
+
+.quick-add__icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--img-icon-pencil) center / contain no-repeat;
+}
+
+.quick-add__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 22px;
+  outline: none;
+
+  &::placeholder {
+    color: var(--pencil-muted);
+  }
+}
+
+.quick-add__submit {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  background: var(--img-btn-plus-round) center / contain no-repeat;
+}

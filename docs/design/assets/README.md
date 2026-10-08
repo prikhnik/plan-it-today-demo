@@ -32,8 +32,8 @@
 
 | № | Файл | Размер, px |
 |---|---|---|
-| 1 | `light/nav-board.png` | 241x239 |
-| 2 | `light/nav-board-active.png` | 241x239 |
+| 1 | `light/nav-board.png` | 241x234 |
+| 2 | `light/nav-board-active.png` | 241x234 |
 | 3 | `light/nav-planner.png` | 247x246 |
 | 4 | `light/nav-planner-active.png` | 247x246 |
 | 5 | `light/nav-help.png` | 258x258 |

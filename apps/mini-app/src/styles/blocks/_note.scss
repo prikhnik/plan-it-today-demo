@@ -1,0 +1,50 @@
+$papers: (
+  1: note-taped,
+  2: note-taped-right,
+  3: note-curled,
+);
+
+$tilts: (
+  1: -2deg,
+  2: 1.5deg,
+  3: 1deg,
+  4: -1.2deg,
+);
+
+.note {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 27% 17% 19% 18%;
+  background: center / 100% 100% no-repeat;
+  text-align: left;
+}
+
+@each $index, $image in $papers {
+  .note--paper-#{$index} {
+    background-image: var(--img-#{$image});
+  }
+}
+
+@each $index, $angle in $tilts {
+  .note--tilt-#{$index} {
+    transform: rotate($angle);
+  }
+}
+
+.note--done {
+  opacity: 0.45;
+}
+
+.note__title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 21px;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}

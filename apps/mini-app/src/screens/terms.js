@@ -30,7 +30,7 @@ export const termsScreen = {
   actions: {
     accept() {
       store.acceptTerms(TERMS_VERSION);
-      navigate('planner', {}, { reset: true });
+      navigate('planner', { focus: true }, { reset: true });
     },
   },
 };

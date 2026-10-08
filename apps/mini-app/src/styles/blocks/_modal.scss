@@ -1,0 +1,27 @@
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-paper);
+  opacity: 0.75;
+}
+
+.modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  padding: 6px 4px 10px;
+  border: 14px solid transparent;
+  border-radius: 22px;
+  border-image: var(--img-row-frame) 32 fill / 14px stretch;
+  background: var(--bg-paper) padding-box;
+}

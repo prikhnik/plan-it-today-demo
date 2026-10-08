@@ -138,3 +138,41 @@ export function formatDateChip(iso, today) {
   if (offset === 1) return `Завтра, ${label}`;
   return label;
 }
+
+const MONTHS_NOMINATIVE = [
+  'Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
+  'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень',
+];
+
+export const WEEKDAY_TITLES = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+
+/** First day of the month, ISO. */
+export function getMonthStart(iso) {
+  return `${iso.slice(0, 7)}-01`;
+}
+
+export function addMonths(iso, months) {
+  const [year, month] = iso.split('-').map(Number);
+  const date = new Date(Date.UTC(year, month - 1 + months, 1));
+  return fromUtc(date.getTime());
+}
+
+/** «Жовтень 2026». */
+export function formatMonthTitle(iso) {
+  const [year, month] = iso.split('-').map(Number);
+  return `${MONTHS_NOMINATIVE[month - 1]} ${year}`;
+}
+
+/**
+ * Weeks of the month starting on Monday; days outside the month are null.
+ * @returns {(string | null)[][]}
+ */
+export function getMonthGrid(iso) {
+  const start = getMonthStart(iso);
+  const [year, month] = start.split('-').map(Number);
+  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const cells = Array(getWeekdayIndex(start)).fill(null);
+  for (let day = 0; day < daysInMonth; day += 1) cells.push(addDays(start, day));
+  while (cells.length % 7) cells.push(null);
+  return Array.from({ length: cells.length / 7 }, (_, week) => cells.slice(week * 7, week * 7 + 7));
+}

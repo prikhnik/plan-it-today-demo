@@ -1,0 +1,66 @@
+.notebook__page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+  padding: 10px 10px 12px 6px;
+  border-style: solid;
+  border-color: transparent;
+  border-width: 22px 18px 22px 33px;
+  border-image: var(--img-notebook-page) 30 24 30 44 / 22px 18px 22px 33px round;
+  background: var(--paper-sheet) padding-box;
+}
+
+.notebook__title {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.notebook__input {
+  width: 100%;
+  min-height: 128px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  background: repeating-linear-gradient(transparent 0 31px, var(--rule-color) 31px 32px) local;
+  font-size: 22px;
+  line-height: 32px;
+  outline: none;
+  resize: none;
+
+  &::placeholder {
+    color: var(--pencil-muted);
+  }
+}
+
+.notebook__date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.notebook__fix {
+  min-height: 44px;
+  font-size: 19px;
+  text-decoration: underline;
+}
+
+.notebook__hint,
+.notebook__note {
+  color: var(--pencil-muted);
+  font-size: 17px;
+}
+
+.notebook__note {
+  text-align: center;
+}
+
+.notebook__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}

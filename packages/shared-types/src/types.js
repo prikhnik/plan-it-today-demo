@@ -12,6 +12,7 @@
  * @property {string} date Plan day, ISO `YYYY-MM-DD`.
  * @property {CardStatus} status
  * @property {CardSource} source
+ * @property {string | null} completedAt ISO date the card was finished, null while active.
  * @property {string} createdAt ISO timestamp.
  */
 

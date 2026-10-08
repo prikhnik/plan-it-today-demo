@@ -11,18 +11,21 @@
 ## Прогресс реализации
 
 1. 2026-10-08, батч 1 готов: каркас, темы, онбординг, навигация, правила прогресса/дат/онбординга с тестами. Отчёт: `reports/2026-10-08-batch1-skeleton.md`.
-2. Дальше: батч 2 (Планер + Записник), по команде автора.
+2. 2026-10-08, батч 2 готов: Планер (быстрое добавление, сетка листков, перенос прошлых, выполненные внизу), Записник (чип даты, календарь), моки и store карточек. Отчёт: `reports/2026-10-08-batch2-planner-notebook.md`.
+3. Демо: https://plan-it-today-demo.vercel.app/ (бот `@plan_it_today_demo_bot`, Menu Button «Відкрити»).
+4. Дальше: батч 3 (Квест), по команде автора.
 
 Где что лежит:
-1. `packages/shared-types/src`: бизнес-правила (`progress.js`, `dates.js`, `onboarding.js`) и JSDoc-типы; тесты в `test/`, `node --test`.
-2. `apps/mini-app/src`: `core/` (router, telegram, theme, storage, toast), `data/` (store, тексты условий), `screens/` (экран = `{ chrome, tab, render, mount?, actions? }`), `components/`, `styles/` (`_base.scss` токены, `_assets.scss` список ассетов, `blocks/` BEM).
+1. `packages/shared-types/src`: бизнес-правила (`cards.js`, `progress.js`, `dates.js` с календарём, `onboarding.js`) и JSDoc-типы; тесты в `test/`, `node --test`.
+2. `apps/mini-app/src`: `core/` (router, telegram, theme, storage, toast), `data/` (store, mock, тексты условий), `screens/` (экран = `{ chrome, tab, render, mount?, actions? }`), `components/`, `styles/` (`_base.scss` токены, `_assets.scss` список ассетов, `blocks/` BEM).
 3. `apps/mini-app/src/assets`: WebP из `docs/design/assets`, генерируется `scripts/prepare-assets.py` (Pillow); шрифт Caveat (OFL).
 
 Конвенции:
 1. Команды через `corepack pnpm` (в домашней папке `package.json` с yarn): `install`, `dev`, `test`, `build`.
 2. Ассеты темы только через CSS-переменные `--img-<имя>` (новый ассет: добавить имя в `_assets.scss`); рамки и кнопки через `border-image`, штриховка прозрачным тайлом `--img-hatch`.
 3. Клики только через `data-nav` / `data-action` / `data-back` / `data-toast`; нереализованное `data-toast="Скоро"`.
-4. Данные демо в `localStorage` с префиксом `pit:`.
+4. Данные демо в `localStorage` с префиксом `pit:` (`profile`, `data`); первое открытие засевается `data/mock.js`, в dev `window.demo.store.resetData()`.
+5. Пользовательский текст в HTML только через `escapeHtml` (`core/html.js`).
 
 ## Продукт
 
@@ -49,7 +52,8 @@ Telegram Mini App «Plan It Today». Заметка превращается в 
 8. Данные: демо на моках; в продукте Postgres, ключ пользователя = Telegram ID.
 9. Чекбоксов в строках «Майбутнього» нет; квест закрывается «Завершити квест», заметка без шагов кнопкой «Готово» в карточке (Q50). Квесты на несколько дней после MVP.
 11. Планер: «+» с текстом сразу кладёт карточку, «+» с пустым полем открывает Записник (Q20). Весь текст заметки = заголовок, на карточке обрезается, в квесте полностью со скроллом (Q21). Переключателя «Сьогодні / Усі» нет; выполненные за сегодня внизу бледными до конца дня; прошлые невыполненные тихо переходят на сегодня (Q22, Q49).
-12. «Закрити» = `WebApp.close()`; назад = нативная `BackButton`, в браузере кнопка «Назад» (Q28). Данные демо в `localStorage` (Q31).
+12. Кнопок «Закрити» и «Назад» в верхней панели нет: только нативные кнопки Telegram (Q28, обновлено 2026-10-08). Данные демо в `localStorage` (Q31).
+13. Тёмная тема: бумага `#141416`, текстура почти незаметна, без заломов.
 10. Открытые вопросы и допущения: `docs/spec/plan-it-today.md`, раздел 16.
 
 ## Дизайн (зафиксировано)
