@@ -1,16 +1,43 @@
 .greeting {
-  margin: 0 16px;
-  padding: 8px 2px 8px;
-  border-bottom: 1.5px solid var(--line-color);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 16px 4px;
+}
+
+.greeting__text {
+  min-width: 0;
 }
 
 .greeting__hello {
-  font-size: 26px;
+  font-size: 1.3rem;
   font-weight: 700;
   line-height: 1.15;
   overflow-wrap: anywhere;
 }
 
 .greeting__phrase {
-  font-size: 19px;
+  color: var(--accent-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.greeting__theme {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+}
+
+.greeting__icon {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: var(--pencil-main);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
 }

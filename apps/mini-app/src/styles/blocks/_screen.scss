@@ -11,17 +11,17 @@
 }
 
 .screen__title {
-  font-size: 30px;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
 .screen__text {
-  font-size: 21px;
+  font-size: 1.05rem;
 }
 
 .screen__note {
   color: var(--pencil-muted);
-  font-size: 18px;
+  font-size: 0.9rem;
 }
 
 .screen__illustration {
@@ -39,12 +39,12 @@
   flex-direction: column;
   gap: 6px;
   padding-left: 20px;
-  font-size: 19px;
+  font-size: 0.95rem;
   list-style: disc;
 }
 
 .screen__link {
   min-height: 48px;
-  font-size: 21px;
+  font-size: 1.05rem;
   text-decoration: underline;
 }

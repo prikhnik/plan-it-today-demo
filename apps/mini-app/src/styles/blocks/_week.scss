@@ -24,7 +24,7 @@
 
 .week__weekday {
   color: var(--pencil-muted);
-  font-size: 17px;
+  font-size: 0.85rem;
 }
 
 .week__number {
@@ -33,7 +33,7 @@
   justify-content: center;
   width: 38px;
   height: 34px;
-  font-size: 21px;
+  font-size: 1.05rem;
 }
 
 .week__day--selected .week__number {

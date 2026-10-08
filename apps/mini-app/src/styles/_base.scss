@@ -9,6 +9,7 @@
   --paper-sheet: #fcfbf7;
   --rule-color: rgb(58 58 58 / 0.16);
   --line-color: rgb(58 58 58 / 0.55);
+  --accent-text: #3b7353;
   --img-paper: url('@assets/textures/paper-light.webp');
   --paper-texture-opacity: 1;
   --creases-opacity: 0.35;
@@ -27,6 +28,7 @@
   --paper-sheet: transparent;
   --rule-color: rgb(229 229 231 / 0.16);
   --line-color: rgb(229 229 231 / 0.45);
+  --accent-text: #74a388;
   --img-paper: url('@assets/textures/paper-dark.webp');
   --paper-texture-opacity: 0.18;
   --creases-opacity: 0;
@@ -44,6 +46,7 @@
 }
 
 html {
+  font-size: 23px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -52,7 +55,8 @@ body {
   background: var(--bg-paper);
   color: var(--pencil-main);
   font-family: 'Caveat', 'Segoe Print', cursive;
-  font-size: 20px;
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1.25;
   -webkit-tap-highlight-color: transparent;
 

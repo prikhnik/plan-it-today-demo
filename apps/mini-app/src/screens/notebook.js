@@ -1,5 +1,6 @@
 import {
   addMonths,
+  extractNoteDate,
   formatDateChip,
   formatDayLabel,
   getMonthStart,
@@ -96,9 +97,9 @@ export const notebookScreen = {
     },
 
     add() {
-      const title = state.text.trim();
-      if (!title) return;
+      if (!state.text.trim()) return;
       const today = toIsoDate();
+      const title = state.recognized ? extractNoteDate(state.text, today).title : state.text.trim();
       store.addCard({ title, date: state.date });
       if (!back()) navigate('planner', {}, { reset: true });
       showToast(state.date === today ? 'Додано в планер' : `Додано на ${formatDayLabel(state.date, today)}`);

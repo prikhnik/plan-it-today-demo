@@ -4,6 +4,7 @@ import {
   addDays,
   addMonths,
   diffDays,
+  extractNoteDate,
   formatDateChip,
   formatDayLabel,
   formatMonthTitle,
@@ -106,4 +107,18 @@ test('upcoming days start tomorrow', () => {
   assert.equal(days[0], '2026-10-09');
   assert.equal(days[6], '2026-10-15');
   assert.equal(getWeekdayTitle(days[0]), 'Пт');
+});
+
+test('date phrase is removed from the title', () => {
+  assert.deepEqual(extractNoteDate('зібрати речі, завтра', TODAY), { title: 'зібрати речі', date: '2026-10-09' });
+  assert.deepEqual(extractNoteDate('Завтра подзвонити в банк', TODAY), { title: 'Подзвонити в банк', date: '2026-10-09' });
+  assert.equal(extractNoteDate('купити хліб завтра ввечері', TODAY).title, 'купити хліб ввечері');
+  assert.equal(extractNoteDate('аптека, у пт, ліки 600 грн', TODAY).title, 'аптека, ліки 600 грн');
+  assert.equal(extractNoteDate('оплата 15.10.', TODAY).title, 'оплата');
+  assert.equal(extractNoteDate('через 3 дні — забрати костюм', TODAY).title, 'забрати костюм');
+});
+
+test('note without date or with only a date keeps its text', () => {
+  assert.deepEqual(extractNoteDate('  купити хліб  ', TODAY), { title: 'купити хліб', date: TODAY });
+  assert.deepEqual(extractNoteDate('завтра', TODAY), { title: 'завтра', date: '2026-10-09' });
 });

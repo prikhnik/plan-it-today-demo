@@ -4,7 +4,7 @@ import { renderGreeting } from './components/greeting.js';
 import { renderNavbar } from './components/navbar.js';
 import { back, canGoBack, getCurrent, navigate, onRouteChange, registerScreen } from './core/router.js';
 import { initTelegram, setBackButton } from './core/telegram.js';
-import { applyTheme, watchSystemTheme } from './core/theme.js';
+import { applyTheme, resolveTheme, watchSystemTheme } from './core/theme.js';
 import { showToast } from './core/toast.js';
 import { MOCK_CARDS } from './data/mock.js';
 import { store } from './data/store.js';
@@ -26,6 +26,17 @@ import { termsReadScreen, termsScreen } from './screens/terms.js';
 const START_SCREEN = { intro: 'intro', terms: 'terms', done: 'planner' };
 
 const app = document.getElementById('app');
+
+const GLOBAL_ACTIONS = {
+  toggleTheme() {
+    const next = resolveTheme(store.getProfile().theme) === 'dark' ? 'light' : 'dark';
+    store.setTheme(next);
+    applyTheme(next);
+    if (getCurrent().name === 'settings-theme') render();
+    else app.querySelector('.greeting').outerHTML = renderGreeting();
+  },
+};
+
 const handleBack = () => back();
 
 function render() {
@@ -50,7 +61,7 @@ app.addEventListener('click', (event) => {
   if (toast) showToast(toast);
   else if ('back' in target.dataset) back();
   else if (nav) navigate(nav, {}, { reset: 'navReset' in target.dataset });
-  else if (action) getCurrent().screen.actions?.[action]?.(target, event);
+  else if (action) (getCurrent().screen.actions?.[action] ?? GLOBAL_ACTIONS[action])?.(target, event);
 });
 
 initTelegram();

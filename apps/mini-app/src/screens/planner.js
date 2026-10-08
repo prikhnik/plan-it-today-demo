@@ -1,4 +1,4 @@
-import { formatDateChip, formatDayLabel, getCardProgress, isQuest, resolveNoteDate, toIsoDate } from '@plan-it-today/shared-types';
+import { extractNoteDate, formatDateChip, formatDayLabel, getCardProgress, isQuest, toIsoDate } from '@plan-it-today/shared-types';
 import { renderBadge } from '../components/badge.js';
 import { renderEmpty } from '../components/empty.js';
 import { escapeHtml } from '../core/html.js';
@@ -25,14 +25,13 @@ function renderNote(card, progress, index) {
 }
 
 function addFromQuickField(value) {
-  const title = value.trim();
-  if (!title) {
+  if (!value.trim()) {
     navigate('notebook');
     return;
   }
 
   const today = toIsoDate();
-  const date = resolveNoteDate(title, today);
+  const { title, date } = extractNoteDate(value, today);
   store.addCard({ title, date });
   navigate('planner', { focus: true }, { replace: true });
   if (date !== today) showToast(`Додано на ${formatDayLabel(date, today)}`);

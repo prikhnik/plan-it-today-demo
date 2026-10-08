@@ -5,7 +5,7 @@
 }
 
 .calendar__title {
-  font-size: 24px;
+  font-size: 1.2rem;
   font-weight: 600;
 }
 
@@ -34,12 +34,12 @@
 .calendar__weekday {
   padding: 4px 0;
   color: var(--pencil-muted);
-  font-size: 17px;
+  font-size: 0.85rem;
 }
 
 .calendar__day {
   min-height: 44px;
-  font-size: 21px;
+  font-size: 1.05rem;
 
   &:disabled {
     opacity: 0.35;

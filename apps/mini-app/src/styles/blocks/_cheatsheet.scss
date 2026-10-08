@@ -5,15 +5,15 @@
   gap: 12px;
   min-height: 44px;
   padding: 6px 4px;
-  background: var(--img-divider-dashed) center bottom / 100% 7px no-repeat;
+  border-bottom: 1px solid var(--line-color);
 }
 
 .cheatsheet__phrase {
-  font-size: 22px;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 
 .cheatsheet__result {
-  font-size: 20px;
+  font-size: 1rem;
   text-align: right;
 }

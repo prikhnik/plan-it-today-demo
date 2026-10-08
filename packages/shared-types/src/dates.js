@@ -123,6 +123,32 @@ export function resolveNoteDate(text, today) {
   return parseDateFromText(text, today)?.date ?? today;
 }
 
+const SEPARATORS_END = /[\s,;:.—–-]+$/u;
+const SEPARATORS_START = /^[\s,;:.—–-]+/u;
+
+/**
+ * Splits a note into a title without the date phrase and the plan date.
+ * «зібрати речі, завтра» → { title: «зібрати речі», date: tomorrow }.
+ * A note that is only a date phrase keeps its text.
+ */
+export function extractNoteDate(text, today) {
+  const trimmed = text.trim();
+  const found = parseDateFromText(trimmed, today);
+  if (!found) return { title: trimmed, date: today };
+
+  const before = trimmed.slice(0, found.index);
+  const after = trimmed.slice(found.index + found.phrase.length);
+  const head = before.replace(SEPARATORS_END, '');
+  const tail = after.replace(SEPARATORS_START, '');
+  const separators = (before.match(SEPARATORS_END)?.[0] ?? '') + (after.match(SEPARATORS_START)?.[0] ?? '');
+  const joiner = head && tail ? (separators.includes(',') ? ', ' : ' ') : '';
+  let title = `${head}${joiner}${tail}`;
+
+  if (!title) return { title: trimmed, date: found.date };
+  if (trimmed[0] !== trimmed[0].toLowerCase()) title = title[0].toUpperCase() + title.slice(1);
+  return { title, date: found.date };
+}
+
 /** «чт 8 жовтня», with the year when it differs from today. */
 export function formatDayLabel(iso, today) {
   const [year, month, day] = iso.split('-').map(Number);
