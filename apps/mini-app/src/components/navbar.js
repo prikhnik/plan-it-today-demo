@@ -1,5 +1,5 @@
 const TABS = [
-  { name: 'planner', label: 'Планер' },
+  { name: 'planner', label: 'Сьогодні' },
   { name: 'future', label: 'Майбутнє' },
   { name: 'help', label: 'Допомога' },
   { name: 'settings', label: 'Налаштування' },

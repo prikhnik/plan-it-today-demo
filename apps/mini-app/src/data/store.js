@@ -66,7 +66,6 @@ export const store = {
   getCard: (id) => data.cards.find((card) => card.id === id) ?? null,
   getPlannerCards: (today) => getPlannerCards(data.cards, today),
   getDayCards: (day) => getDayCards(data.cards, day),
-  getCounts: () => ({ cards: data.cards.length, steps: data.steps.length }),
 
   addCard({ title, date }) {
     const card = {

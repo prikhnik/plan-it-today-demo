@@ -80,7 +80,15 @@
 }
 
 .quest__finish {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding: 6px 0 8px;
+}
+
+.quest__warning {
+  font-size: 1.05rem;
+  text-align: center;
 }
 
 .quest__missing {

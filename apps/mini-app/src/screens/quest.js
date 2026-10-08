@@ -22,7 +22,7 @@ import { store } from '../data/store.js';
 const STEP_MAX_LENGTH = 80;
 const TITLE_MAX_LENGTH = 500;
 
-const state = { cardId: null, adding: false, stepId: null, draft: null, month: '' };
+const state = { cardId: null, adding: false, stepId: null, draft: null, month: '', confirmDelete: false };
 let root = null;
 
 const getCard = () => store.getCard(state.cardId);
@@ -30,8 +30,7 @@ const getStep = () => store.getSteps().find((step) => step.id === state.stepId);
 
 function getSubtitle(card, progress, today) {
   if (card.status === 'done') return 'Виконано';
-  const kind = isQuest(progress) ? 'Квест' : 'Нотатка';
-  return card.date <= today ? `${kind} на сьогодні` : `${kind} на ${formatDayLabel(card.date, today)}`;
+  return card.date <= today ? 'Квест на сьогодні' : `Квест на ${formatDayLabel(card.date, today)}`;
 }
 
 function getBoxState(step, steps) {
@@ -83,7 +82,15 @@ function renderFinish(card, progress) {
     return '<button class="button" type="button" data-action="reopen">Повернути в план</button>';
   }
   if (!isQuest(progress)) {
-    return '<button class="button button--primary" type="button" data-action="finish">Готово</button>';
+    if (state.confirmDelete) {
+      return `
+        <p class="quest__warning">Видалити квест?</p>
+        <button class="button" type="button" data-action="deleteCard">Так, видалити</button>
+        <button class="screen__link" type="button" data-action="cancelDeleteNote">Ні, залишити</button>`;
+    }
+    return `
+      <button class="button button--primary" type="button" data-action="finish">Готово</button>
+      <button class="button button--muted" type="button" data-action="askDeleteNote">Видалити квест</button>`;
   }
   return `<button class="button button--primary" type="button" data-action="finish"${canFinishQuest(progress) ? '' : ' disabled'}>Завершити квест</button>`;
 }
@@ -245,7 +252,7 @@ export const questScreen = {
   tab: 'planner',
 
   render(params) {
-    Object.assign(state, { cardId: params.cardId, adding: false, stepId: null, draft: null });
+    Object.assign(state, { cardId: params.cardId, adding: false, stepId: null, draft: null, confirmDelete: false });
     return renderQuest();
   },
 
@@ -311,6 +318,16 @@ export const questScreen = {
     cancelDelete() {
       state.draft.confirmDelete = false;
       openModal(renderCardEditor());
+    },
+
+    askDeleteNote() {
+      state.confirmDelete = true;
+      refresh();
+    },
+
+    cancelDeleteNote() {
+      state.confirmDelete = false;
+      refresh();
     },
 
     deleteCard() {

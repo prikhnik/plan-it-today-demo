@@ -15,7 +15,7 @@ export const settingsAccessScreen = {
         <ol class="howto">
           <li class="howto__step">
             <span class="howto__title">Кнопка «Відкрити»</span>
-            У чаті з ботом вона відкриває планер одразу з полем для нотатки.
+            У чаті з ботом вона відкриває планер одразу з полем для нової справи.
           </li>
           <li class="howto__step">
             <span class="howto__title">Закріпи чат</span>

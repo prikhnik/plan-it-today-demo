@@ -54,8 +54,8 @@ export const notebookScreen = {
     return `
       <section class="notebook">
         <div class="notebook__page">
-          <h1 class="notebook__title">Нова нотатка</h1>
-          <textarea class="notebook__input" rows="5" maxlength="500" aria-label="Текст нотатки"
+          <h1 class="notebook__title">Нова справа</h1>
+          <textarea class="notebook__input" rows="5" maxlength="500" aria-label="Текст справи"
             placeholder="аптека ввечері, ліки 600 грн, вітаміни 500">${escapeHtml(state.text)}</textarea>
           <div class="notebook__date">
             <button class="chip" type="button" data-action="openCalendar">

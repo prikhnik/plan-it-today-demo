@@ -4,13 +4,6 @@ $papers: (
   3: note-curled,
 );
 
-$tilts: (
-  1: -2deg,
-  2: 1.5deg,
-  3: 1deg,
-  4: -1.2deg,
-);
-
 .note {
   position: relative;
   display: flex;
@@ -19,7 +12,7 @@ $tilts: (
   gap: 6px;
   width: 100%;
   aspect-ratio: 1;
-  padding: 27% 17% 19% 18%;
+  padding: 26% 21% 23%;
   background: center / 100% 100% no-repeat;
   text-align: left;
 }
@@ -27,12 +20,6 @@ $tilts: (
 @each $index, $image in $papers {
   .note--paper-#{$index} {
     background-image: var(--img-#{$image});
-  }
-}
-
-@each $index, $angle in $tilts {
-  .note--tilt-#{$index} {
-    transform: rotate($angle);
   }
 }
 
@@ -54,11 +41,15 @@ $decos: pill, cross, phone, bread, pot, broom, laptop, box, basket;
 
 .note__deco {
   position: absolute;
-  right: 16%;
-  bottom: 17%;
+  right: 21%;
+  bottom: 23%;
   width: 30px;
   height: 30px;
   background: center / contain no-repeat;
+}
+
+.note--paper-3 .note__deco {
+  right: 32%;
 }
 
 @each $deco in $decos {

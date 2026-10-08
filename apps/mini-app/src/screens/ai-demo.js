@@ -82,7 +82,7 @@ function renderStep(step, isChild) {
 function renderNotebook() {
   return `
     <div class="notebook__page ai-demo__notebook">
-      <p class="notebook__title">Нова нотатка</p>
+      <p class="notebook__title">Нова справа</p>
       <p class="ai-demo__typed">${state.typed}<span class="ai-demo__caret" aria-hidden="true"></span></p>
       <span class="button button--compact${state.pressed ? ' button--primary ai-demo__press--pressed' : ''}${state.phase === 'pressing' ? ' ai-demo__press' : ''}">
         <span class="button__icon button__icon--sparkle" aria-hidden="true"></span>
@@ -132,7 +132,7 @@ function renderBody() {
     return renderCard({
       modifier: 'intro',
       heading: 'Демо ШІ-помічника',
-      text: 'Хвилина показу: помічник сам розбиває нотатку на кроки. Твої картки не зміняться.',
+      text: 'Хвилина показу: помічник сам розбиває справу на кроки. Твої картки не зміняться.',
       actions: `
         <button class="button button--primary" type="button" data-action="start">Почати</button>
         <button class="button" type="button" data-back>Скасувати</button>`,

@@ -1,4 +1,3 @@
-import { formatDayLabel, toIsoDate } from '@plan-it-today/shared-types';
 import { escapeHtml } from '../core/html.js';
 import { navigate } from '../core/router.js';
 import { getTelegramUser } from '../core/telegram.js';
@@ -6,25 +5,10 @@ import { applyTheme } from '../core/theme.js';
 import { showToast } from '../core/toast.js';
 import { store } from '../data/store.js';
 
-const THEME_LABELS = { system: 'Системна', light: 'Світла', dark: 'Темна' };
-const NOT_IN_TELEGRAM = 'немає (відкрито не в Telegram)';
-
 function getFacts() {
   const user = getTelegramUser();
-  const profile = store.getProfile();
-  const counts = store.getCounts();
-  const accepted = profile.termsAcceptedAt
-    ? `версія ${profile.termsAcceptedVersion}, ${formatDayLabel(toIsoDate(new Date(profile.termsAcceptedAt)))}`
-    : 'ще ні';
-
-  return [
-    ['Telegram ID', user ? String(user.id) : NOT_IN_TELEGRAM],
-    ['Ім’я', user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : NOT_IN_TELEGRAM],
-    ['Умови прийнято', accepted],
-    ['Тема', THEME_LABELS[profile.theme]],
-    ['Картки', String(counts.cards)],
-    ['Кроки', String(counts.steps)],
-  ];
+  const name = user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : 'немає (відкрито не в Telegram)';
+  return [['Ім’я', name]];
 }
 
 export const settingsDataScreen = {

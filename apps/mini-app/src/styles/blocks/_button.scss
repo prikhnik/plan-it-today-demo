@@ -55,6 +55,11 @@
   background-image: var(--img-icon-sparkle);
 }
 
+.button--muted {
+  border-image-source: var(--img-btn-disabled);
+  color: var(--pencil-muted);
+}
+
 .button--compact {
   padding: 0 4px;
   font-size: 1rem;

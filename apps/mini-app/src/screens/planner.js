@@ -8,11 +8,10 @@ import { getDecoIcon } from '../data/deco.js';
 import { store } from '../data/store.js';
 
 const PAPERS = 3;
-const TILTS = 4;
 
 function renderNote(card, progress, index) {
   const deco = getDecoIcon(card.title);
-  const modifiers = [`paper-${(index % PAPERS) + 1}`, `tilt-${(index % TILTS) + 1}`, card.status === 'done' && 'done']
+  const modifiers = [`paper-${(index % PAPERS) + 1}`, card.status === 'done' && 'done']
     .filter(Boolean)
     .map((modifier) => ` note--${modifier}`)
     .join('');
