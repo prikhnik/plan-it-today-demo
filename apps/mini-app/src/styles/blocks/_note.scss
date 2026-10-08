@@ -12,6 +12,7 @@ $tilts: (
 );
 
 .note {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -47,4 +48,21 @@ $tilts: (
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+}
+
+$decos: pill, cross, phone, bread, pot, broom, laptop, box, basket;
+
+.note__deco {
+  position: absolute;
+  right: 16%;
+  bottom: 17%;
+  width: 30px;
+  height: 30px;
+  background: center / contain no-repeat;
+}
+
+@each $deco in $decos {
+  .note__deco--#{$deco} {
+    background-image: var(--img-deco-#{$deco});
+  }
 }

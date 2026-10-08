@@ -52,3 +52,10 @@ export const canAddToHomeScreen = () => supports('8.0') && typeof webApp.addToHo
 export function addToHomeScreen() {
   if (canAddToHomeScreen()) webApp.addToHomeScreen();
 }
+
+/** Light tap for marks, success for finished quests. */
+export function haptic(kind) {
+  if (!supports('6.1')) return;
+  if (kind === 'success') webApp.HapticFeedback.notificationOccurred('success');
+  else webApp.HapticFeedback.impactOccurred('light');
+}

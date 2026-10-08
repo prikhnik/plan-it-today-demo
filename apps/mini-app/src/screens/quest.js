@@ -16,6 +16,7 @@ import { renderCalendar } from '../components/calendar.js';
 import { escapeHtml } from '../core/html.js';
 import { back, navigate } from '../core/router.js';
 import { showToast } from '../core/toast.js';
+import { haptic } from '../core/telegram.js';
 import { store } from '../data/store.js';
 
 const STEP_MAX_LENGTH = 80;
@@ -100,7 +101,7 @@ function renderQuest() {
   const today = toIsoDate();
   const steps = store.getSteps();
   const progress = getCardProgress(card.id, steps);
-  const percent = progress.total ? Math.round((progress.done / progress.total) * 100) : 0;
+  const ratio = progress.total ? progress.done / progress.total : 0;
   const items = getTopLevelSteps(steps, card.id).map((step) => renderStep(step, steps, false)).join('');
 
   return `
@@ -112,7 +113,7 @@ function renderQuest() {
         <button class="quest__edit" type="button" data-action="editCard" aria-label="Редагувати картку"></button>
       </header>
       <p class="quest__subtitle">${getSubtitle(card, progress, today)}</p>
-      <div class="progress" style="--progress: ${percent}%">
+      <div class="progress" style="--progress: ${ratio}">
         <span class="progress__bar"><span class="progress__fill"></span></span>
         <span class="progress__label">${progress.done} з ${progress.total}</span>
       </div>
@@ -256,6 +257,7 @@ export const questScreen = {
   actions: {
     toggleStep(el) {
       store.toggleStep(el.dataset.stepId);
+      haptic('light');
       refresh();
     },
 
@@ -323,6 +325,7 @@ export const questScreen = {
       const progress = getCardProgress(state.cardId, store.getSteps());
       if (!canFinishQuest(progress) && !canMarkNoteDone(progress)) return;
       store.completeCard(state.cardId);
+      haptic('success');
       if (!back()) navigate('planner', {}, { reset: true });
       showToast(isQuest(progress) ? 'Квест завершено' : 'Справу виконано');
     },

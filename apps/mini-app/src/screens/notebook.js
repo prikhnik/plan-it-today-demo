@@ -8,11 +8,12 @@ import {
   toIsoDate,
 } from '@plan-it-today/shared-types';
 import { renderCalendar } from '../components/calendar.js';
+import { escapeHtml } from '../core/html.js';
 import { back, navigate } from '../core/router.js';
 import { showToast } from '../core/toast.js';
 import { store } from '../data/store.js';
 
-const state = { text: '', date: '', manualDate: false, recognized: false, month: '' };
+const state = { text: '', date: '', manualDate: false, recognized: false, month: '', resume: false };
 let root = null;
 
 function updateForm() {
@@ -47,24 +48,25 @@ export const notebookScreen = {
 
   render(params) {
     const today = toIsoDate();
-    Object.assign(state, { text: '', date: params.date ?? today, manualDate: Boolean(params.date), recognized: false });
+    if (state.resume) state.resume = false;
+    else Object.assign(state, { text: '', date: params.date ?? today, manualDate: Boolean(params.date), recognized: false });
 
     return `
       <section class="notebook">
         <div class="notebook__page">
           <h1 class="notebook__title">Нова нотатка</h1>
           <textarea class="notebook__input" rows="5" maxlength="500" aria-label="Текст нотатки"
-            placeholder="аптека ввечері, ліки 600 грн, вітаміни 500"></textarea>
+            placeholder="аптека ввечері, ліки 600 грн, вітаміни 500">${escapeHtml(state.text)}</textarea>
           <div class="notebook__date">
             <button class="chip" type="button" data-action="openCalendar">
               <span class="chip__icon" aria-hidden="true"></span>
               <span class="chip__label">${formatDateChip(state.date, today)}</span>
             </button>
-            <button class="notebook__fix" type="button" data-action="openCalendar" hidden>виправити</button>
+            <button class="notebook__fix" type="button" data-action="openCalendar"${state.recognized ? '' : ' hidden'}>виправити</button>
           </div>
           <p class="notebook__hint">Дату можна написати словами: «завтра», «у пт», «15.10».</p>
           <div class="notebook__actions">
-            <button class="button button--primary" type="button" data-action="add" disabled>Додати в планер</button>
+            <button class="button button--primary" type="button" data-action="add"${state.text.trim() ? '' : ' disabled'}>Додати в планер</button>
             <button class="button button--compact" type="button" data-action="ai">
               <span class="button__icon button__icon--sparkle" aria-hidden="true"></span>
               <span class="tag">ШІ</span>
@@ -105,6 +107,9 @@ export const notebookScreen = {
       showToast(state.date === today ? 'Додано в планер' : `Додано на ${formatDayLabel(state.date, today)}`);
     },
 
-    ai: () => showToast('Демо ШІ-помічника з’явиться згодом'),
+    ai() {
+      state.resume = true;
+      navigate('ai-demo');
+    },
   },
 };

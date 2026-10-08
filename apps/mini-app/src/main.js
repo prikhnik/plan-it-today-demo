@@ -9,6 +9,7 @@ import { showToast } from './core/toast.js';
 import { MOCK_CARDS } from './data/mock.js';
 import { store } from './data/store.js';
 import { TERMS_VERSION } from './data/terms.js';
+import { aiDemoScreen } from './screens/ai-demo.js';
 import { futureScreen } from './screens/future.js';
 import { helpScreen } from './screens/help.js';
 import { introScreen } from './screens/intro.js';
@@ -37,21 +38,39 @@ const GLOBAL_ACTIONS = {
   },
 };
 
-const handleBack = () => back();
+const BARE_CHROME = new Set(['onboarding', 'fullscreen']);
+let mountedScreen = null;
+
+const getOpenModal = () => app.querySelector('.modal');
+const syncBackButton = () => setBackButton(canGoBack() || Boolean(getOpenModal()), handleBack);
+
+function handleBack() {
+  const modal = getOpenModal();
+  if (modal) modal.querySelector('.modal__backdrop')?.click();
+  else back();
+}
 
 function render() {
   const { screen, params } = getCurrent();
-  const isOnboarding = screen.chrome === 'onboarding';
+  const isBare = BARE_CHROME.has(screen.chrome);
 
+  mountedScreen?.unmount?.();
   app.className = `app app--${screen.chrome}`;
   app.innerHTML = `
-    ${isOnboarding ? '' : renderGreeting()}
+    ${isBare ? '' : renderGreeting()}
     <main class="app__main">${screen.render(params)}</main>
-    ${isOnboarding ? '' : renderNavbar(params.tab ?? screen.tab)}`;
+    ${isBare ? '' : renderNavbar(params.tab ?? screen.tab)}`;
 
+  mountedScreen = screen;
   screen.mount?.(app.querySelector('.app__main'), params);
-  setBackButton(canGoBack(), handleBack);
+  syncBackButton();
 }
+
+new MutationObserver(syncBackButton).observe(app, { childList: true, subtree: true });
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && getOpenModal()) handleBack();
+});
 
 app.addEventListener('click', (event) => {
   const target = event.target.closest('[data-toast], [data-back], [data-nav], [data-action]');
@@ -82,6 +101,7 @@ registerScreen('settings-dates', settingsDatesScreen);
 registerScreen('settings-access', settingsAccessScreen);
 registerScreen('settings-data', settingsDataScreen);
 registerScreen('settings-about', settingsAboutScreen);
+registerScreen('ai-demo', aiDemoScreen);
 
 onRouteChange(render);
 navigate(START_SCREEN[getOnboardingStep(store.getProfile(), TERMS_VERSION)], { focus: true }, { reset: true });

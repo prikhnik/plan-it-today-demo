@@ -1,0 +1,147 @@
+.ai-demo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  padding: 12px 0 calc(14px + env(safe-area-inset-bottom));
+}
+
+.ai-demo--card {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.ai-demo__illustration {
+  flex-shrink: 0;
+  align-self: center;
+  width: 180px;
+  aspect-ratio: 1.1;
+  background: center / contain no-repeat;
+}
+
+.ai-demo__illustration--intro {
+  background-image: var(--img-illus-demo-intro);
+}
+
+.ai-demo__illustration--finish {
+  background-image: var(--img-illus-demo-finish);
+}
+
+.ai-demo__heading {
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.ai-demo__text {
+  font-size: 1.05rem;
+}
+
+.ai-demo__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.ai-demo__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 48px;
+}
+
+.ai-demo__caption {
+  color: var(--accent-text);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.ai-demo__skip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 4px;
+  font-size: 0.95rem;
+  text-decoration: underline;
+}
+
+.ai-demo__stage {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ai-demo__notebook {
+  gap: 18px;
+  min-height: auto;
+}
+
+.ai-demo__typed {
+  min-height: 2.9em;
+  font-size: 1.1rem;
+  line-height: 1.45em;
+}
+
+.ai-demo__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin-left: 2px;
+  background: var(--pencil-main);
+  vertical-align: text-bottom;
+  animation: ai-demo-blink 1s steps(1) infinite;
+}
+
+.ai-demo__press,
+.ai-demo__edit {
+  animation: ai-demo-pulse 0.9s ease-in-out infinite;
+}
+
+.ai-demo__press--pressed {
+  transform: scale(0.97);
+}
+
+.ai-demo__step--drawing {
+  animation: ai-demo-draw 1.2s ease-out both;
+}
+
+.ai-demo__step--renamed .step__text {
+  color: var(--accent-text);
+}
+
+@keyframes ai-demo-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes ai-demo-pulse {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes ai-demo-draw {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-demo__caret,
+  .ai-demo__press,
+  .ai-demo__edit,
+  .ai-demo__step--drawing {
+    animation: none;
+  }
+}

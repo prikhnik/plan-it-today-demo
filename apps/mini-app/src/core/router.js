@@ -3,7 +3,8 @@
  * @property {(params: object) => string} render
  * @property {(root: HTMLElement, params: object) => void} [mount]
  * @property {Record<string, (el: HTMLElement, event: Event) => void>} [actions]
- * @property {'tab' | 'nested' | 'onboarding'} chrome
+ * @property {() => void} [unmount] Called before the screen is replaced.
+ * @property {'tab' | 'nested' | 'onboarding' | 'fullscreen'} chrome
  * @property {string} [tab] Active bottom tab.
  */
 

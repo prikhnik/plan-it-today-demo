@@ -4,12 +4,14 @@ import { renderEmpty } from '../components/empty.js';
 import { escapeHtml } from '../core/html.js';
 import { navigate } from '../core/router.js';
 import { showToast } from '../core/toast.js';
+import { getDecoIcon } from '../data/deco.js';
 import { store } from '../data/store.js';
 
 const PAPERS = 3;
 const TILTS = 4;
 
 function renderNote(card, progress, index) {
+  const deco = getDecoIcon(card.title);
   const modifiers = [`paper-${(index % PAPERS) + 1}`, `tilt-${(index % TILTS) + 1}`, card.status === 'done' && 'done']
     .filter(Boolean)
     .map((modifier) => ` note--${modifier}`)
@@ -20,6 +22,7 @@ function renderNote(card, progress, index) {
       <button class="note${modifiers}" type="button" data-action="openCard" data-card-id="${card.id}">
         <span class="note__title">${escapeHtml(card.title)}</span>
         ${isQuest(progress) ? renderBadge(progress) : ''}
+        ${deco ? `<span class="note__deco note__deco--${deco}" aria-hidden="true"></span>` : ''}
       </button>
     </li>`;
 }

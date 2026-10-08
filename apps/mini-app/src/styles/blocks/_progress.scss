@@ -15,9 +15,11 @@
 
 .progress__fill {
   position: absolute;
-  inset: 0;
-  width: var(--progress);
-  border-radius: 6px;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  width: calc((100% + 10px) * var(--progress));
+  border-radius: 12px;
   background: var(--img-hatch) left top / 140px repeat;
 }
 

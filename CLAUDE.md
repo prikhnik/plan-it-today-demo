@@ -18,11 +18,12 @@
 6. 2026-10-08, правки Демо 1: шапка без линии, фраза акцентом, переключатель темы, сплошные линии, шрифт крупнее, дата убирается из названия. Отчёт: `reports/2026-10-08-demo1-edits.md`.
 7. Демо: https://plan-it-today-demo.vercel.app/ (автодеплой Vercel на каждый push в `main`) (бот `@plan_it_today_demo_bot`, Menu Button «Відкрити»).
 8. 2026-10-08: шрифт Neucha вместо Caveat (Q54).
-9. Дальше: фидбек тестеров по Демо 1; затем демо ШІ или бэкенд, по команде автора.
+9. 2026-10-08, батч 6 готов: демо ШІ-помічника (~55 с, свои моки), полировка (прогресс до рамки, «Назад» закрывает окна, вибрация), иконки на листках. Отчёт: `reports/2026-10-08-batch6-ai-demo.md`.
+10. Дальше: фидбек тестеров по Демо 1; затем бэкенд (ER-схема и `API_CONTRACT.md`), по команде автора.
 
 Где что лежит:
 1. `packages/shared-types/src`: бизнес-правила (`cards.js` с днями «Майбутнього», `progress.js`, `dates.js` с календарём, `onboarding.js`) и JSDoc-типы; тесты в `test/`, `node --test`.
-2. `apps/mini-app/src`: `core/` (router, telegram, theme, storage, toast, html, id), `data/` (store, mock, тексты условий), `screens/` (экран = `{ chrome, tab, render, mount?, actions? }`), `components/`, `styles/` (`_base.scss` токены, `_assets.scss` список ассетов, `blocks/` BEM).
+2. `apps/mini-app/src`: `core/` (router, telegram, theme, storage, toast, html, id), `data/` (store, mock, тексты условий), `screens/` (экран = `{ chrome, tab, render, mount?, unmount?, actions? }`), `components/`, `styles/` (`_base.scss` токены, `_assets.scss` список ассетов, `blocks/` BEM).
 3. `apps/mini-app/src/assets`: WebP из `docs/design/assets`, генерируется `scripts/prepare-assets.py` (Pillow); шрифт Neucha (OFL).
 
 Конвенции:

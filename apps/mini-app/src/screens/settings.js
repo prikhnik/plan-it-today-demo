@@ -2,7 +2,7 @@ const ROWS = [
   { label: 'Тема', nav: 'settings-theme' },
   { label: 'Як писати дату', nav: 'settings-dates' },
   { label: 'Швидкий вхід', nav: 'settings-access' },
-  { label: 'Демо ШІ-помічника', toast: 'Демо ШІ-помічника з’явиться згодом' },
+  { label: 'Демо ШІ-помічника', nav: 'ai-demo' },
   { label: 'Умови користування', nav: 'settings-terms' },
   { label: 'Дані користувача', nav: 'settings-data' },
   { label: 'Про застосунок', nav: 'settings-about' },
