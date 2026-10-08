@@ -80,6 +80,8 @@ function renderAddStep() {
     </form>`;
 }
 
+const EDIT_BUTTON = '<button class="button" type="button" data-action="editCard">Редагувати</button>';
+
 function renderFinish(card, progress) {
   if (card.status === 'done') {
     return '<button class="button" type="button" data-action="reopen">Повернути в план</button>';
@@ -93,9 +95,12 @@ function renderFinish(card, progress) {
     }
     return `
       <button class="button button--primary" type="button" data-action="finish">Готово</button>
+      ${EDIT_BUTTON}
       <button class="button button--muted" type="button" data-action="askDeleteNote">Видалити квест</button>`;
   }
-  return `<button class="button button--primary" type="button" data-action="finish"${canFinishQuest(progress) ? '' : ' disabled'}>Завершити квест</button>`;
+  return `
+    <button class="button button--primary" type="button" data-action="finish"${canFinishQuest(progress) ? '' : ' disabled'}>Завершити квест</button>
+    ${EDIT_BUTTON}`;
 }
 
 function renderQuest() {

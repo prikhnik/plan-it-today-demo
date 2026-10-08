@@ -59,10 +59,17 @@ test.describe('with accepted terms', () => {
     expect(states.indexOf(true)).toBe(states.lastIndexOf(false) + 1);
   });
 
+  test('quest with steps: «Редагувати» under «Завершити квест»', async ({ page }) => {
+    await openCard(page, 'Аптека ввечері');
+    expect(await page.locator('.quest__finish .button').allInnerTexts()).toEqual(['Завершити квест', 'Редагувати']);
+    await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
+    await expect(page.locator('.modal__panel textarea')).toBeFocused();
+  });
+
   test('move a card to «Майбутнє»', async ({ page }) => {
     const tomorrow = await getTomorrow(page);
     await openCard(page, 'Купити хліб');
-    await page.locator('[data-action="editCard"]').click();
+    await page.locator('.quest__edit').click();
     await page.locator('.sheet [data-action="openCalendar"]').click();
     await pickDate(page, tomorrow);
     await page.getByRole('button', { name: 'Зберегти' }).click();
@@ -76,7 +83,13 @@ test.describe('with accepted terms', () => {
 
   test('«Важливо»: on top, highlighted, kept in data', async ({ page }) => {
     await openCard(page, 'Купити хліб');
-    await page.locator('[data-action="editCard"]').click();
+    // «Редагувати» sits between «Готово» and «Видалити квест»; the pencil in the header does the same.
+    expect(await page.locator('.quest__finish .button').allInnerTexts()).toEqual([
+      'Готово',
+      'Редагувати',
+      'Видалити квест',
+    ]);
+    await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
     const chip = page.locator('[data-action="togglePriority"]');
     await expect(chip).toHaveAttribute('aria-pressed', 'false');
     await chip.click();
@@ -120,7 +133,7 @@ test.describe('with accepted terms', () => {
 
   test('modal focus: inside on open, Tab trapped, back to the pencil on Escape', async ({ page }) => {
     await openCard(page, 'Купити хліб');
-    const pencil = page.locator('[data-action="editCard"]');
+    const pencil = page.locator('.quest__edit');
     await pencil.focus();
     await pencil.press('Enter');
     const panel = page.locator('.modal__panel');
