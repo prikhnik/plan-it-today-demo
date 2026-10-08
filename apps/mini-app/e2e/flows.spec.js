@@ -62,6 +62,7 @@ test.describe('with accepted terms', () => {
   test('quest with steps: «Редагувати» under «Завершити квест»', async ({ page }) => {
     await openCard(page, 'Аптека ввечері');
     expect(await page.locator('.quest__finish .button').allInnerTexts()).toEqual(['Завершити квест', 'Редагувати']);
+    await expect(page.locator('.quest__header button')).toHaveCount(0);
     await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
     await expect(page.locator('.modal__panel textarea')).toBeFocused();
   });
@@ -69,7 +70,7 @@ test.describe('with accepted terms', () => {
   test('move a card to «Майбутнє»', async ({ page }) => {
     const tomorrow = await getTomorrow(page);
     await openCard(page, 'Купити хліб');
-    await page.locator('.quest__edit').click();
+    await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
     await page.locator('.sheet [data-action="openCalendar"]').click();
     await pickDate(page, tomorrow);
     await page.getByRole('button', { name: 'Зберегти' }).click();
@@ -83,7 +84,7 @@ test.describe('with accepted terms', () => {
 
   test('«Важливо»: on top, highlighted, kept in data', async ({ page }) => {
     await openCard(page, 'Купити хліб');
-    // «Редагувати» sits between «Готово» and «Видалити квест»; the pencil in the header does the same.
+    // «Редагувати» sits between «Готово» and «Видалити квест»: the only way into the card editor.
     expect(await page.locator('.quest__finish .button').allInnerTexts()).toEqual([
       'Готово',
       'Редагувати',
@@ -131,11 +132,11 @@ test.describe('with accepted terms', () => {
     expect(await readStorage(page, 'phrase')).toBeNull();
   });
 
-  test('modal focus: inside on open, Tab trapped, back to the pencil on Escape', async ({ page }) => {
+  test('modal focus: inside on open, Tab trapped, back to «Редагувати» on Escape', async ({ page }) => {
     await openCard(page, 'Купити хліб');
-    const pencil = page.locator('.quest__edit');
-    await pencil.focus();
-    await pencil.press('Enter');
+    const editButton = page.getByRole('button', { name: 'Редагувати', exact: true });
+    await editButton.focus();
+    await editButton.press('Enter');
     const panel = page.locator('.modal__panel');
     await expect(panel.locator('textarea')).toBeFocused();
     for (let index = 0; index < 6; index += 1) {
@@ -144,7 +145,7 @@ test.describe('with accepted terms', () => {
     }
     await page.keyboard.press('Escape');
     await expect(panel).toHaveCount(0);
-    await expect(pencil).toBeFocused();
+    await expect(editButton).toBeFocused();
   });
 
   test('about screen shows version and build', async ({ page }) => {

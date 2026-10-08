@@ -60,7 +60,7 @@ test.describe('accessibility (axe-core)', () => {
       await audit(page, `${theme}: planner`);
       await openCard(page, 'Аптека ввечері');
       await audit(page, `${theme}: quest`);
-      await page.locator('.quest__edit').click();
+      await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
       await audit(page, `${theme}: card editor`);
       await page.keyboard.press('Escape');
       await page.locator('[data-nav="future"]').click();

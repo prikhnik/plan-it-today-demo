@@ -99,6 +99,13 @@
 }
 
 .ai-demo__press,
+// Side margins leave room for the pulse (scale 1.06) inside the clipped stage.
+.ai-demo__edit-button {
+  flex-shrink: 0;
+  width: auto;
+  margin: 8px 12px 4px;
+}
+
 .ai-demo__edit {
   animation: ai-demo-pulse 0.9s ease-in-out infinite;
 }

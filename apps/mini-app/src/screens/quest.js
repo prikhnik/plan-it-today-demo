@@ -127,7 +127,6 @@ function renderQuest() {
         <div class="quest__banner">
           <h1 class="quest__title">${escapeHtml(card.title)}</h1>
         </div>
-        <button class="quest__edit" type="button" data-action="editCard" aria-label="Редагувати картку"></button>
       </header>
       <p class="quest__subtitle">${getSubtitle(card, progress, today)}</p>
       <div class="progress" data-progress="${ratio}">

@@ -110,7 +110,6 @@ function renderQuest() {
     <div class="quest ai-demo__quest">
       <header class="quest__header">
         <div class="quest__banner"><p class="quest__title">${title}</p></div>
-        <span class="quest__edit${state.phase === 'editing' ? ' ai-demo__edit' : ''}" aria-hidden="true"></span>
       </header>
       <p class="quest__subtitle">Квест на сьогодні</p>
       <div class="progress" data-progress="${done / steps.length}">
@@ -118,6 +117,7 @@ function renderQuest() {
         <span class="progress__label">${done} з ${steps.length}</span>
       </div>
       <ul class="checklist">${items}</ul>
+      <span class="button ai-demo__edit-button${state.phase === 'editing' ? ' ai-demo__edit' : ''}" aria-hidden="true">Редагувати</span>
     </div>`;
 }
 
