@@ -23,12 +23,12 @@ export const helpScreen = {
           Сайт підтримки
           <span class="button__icon button__icon--external" aria-hidden="true"></span>
         </button>
-        ${isOnline ? '' : '<p class="screen__text">Немає зʼєднання. Відкрий пізніше.</p>'}
+        ${isOnline ? '' : '<p class="screen__text">Немає з’єднання. Відкрий пізніше.</p>'}
         <p class="screen__note">Застосунок не замінює лікаря.</p>
       </section>`;
   },
 
   actions: {
-    openSupport: () => (SUPPORT_URL ? openLink(SUPPORT_URL) : showToast('Посилання на сайт зʼявиться згодом')),
+    openSupport: () => (SUPPORT_URL ? openLink(SUPPORT_URL) : showToast('Посилання на сайт з’явиться згодом')),
   },
 };

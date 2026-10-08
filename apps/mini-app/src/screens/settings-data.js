@@ -19,7 +19,7 @@ function getFacts() {
 
   return [
     ['Telegram ID', user ? String(user.id) : NOT_IN_TELEGRAM],
-    ['Імʼя', user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : NOT_IN_TELEGRAM],
+    ['Ім’я', user ? [user.first_name, user.last_name].filter(Boolean).join(' ') : NOT_IN_TELEGRAM],
     ['Умови прийнято', accepted],
     ['Тема', THEME_LABELS[profile.theme]],
     ['Картки', String(counts.cards)],
