@@ -2,7 +2,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
-import { expect, openCard, seedProfile, test } from './helpers.js';
+import { expect, openCard, seedProfile, seedCards, test } from './helpers.js';
 
 const BLOCKING = ['critical', 'serious'];
 
@@ -44,6 +44,7 @@ test.describe('accessibility (axe-core)', () => {
 
   for (const theme of ['light', 'dark']) {
     test(`key screens, ${theme} theme`, async ({ page }) => {
+      await seedCards(page);
       await page.goto('./');
       await expect(page.locator('[data-action="continue"]')).toBeVisible();
       await page.evaluate((value) => {
@@ -68,6 +69,9 @@ test.describe('accessibility (axe-core)', () => {
       await audit(page, `${theme}: future`);
       await page.locator('[data-nav="settings"]').click();
       await audit(page, `${theme}: settings`);
+      await page.locator('[data-nav="settings-history"]').click();
+      await audit(page, `${theme}: history`);
+      await page.screenshot({ path: test.info().outputPath(`history-${theme}.png`) });
     });
   }
 });
@@ -85,6 +89,7 @@ test.describe('CSP with the real Telegram SDK', () => {
       );
     });
     await seedProfile(page);
+    await seedCards(page);
     const response = await page.goto('./');
     expect(response.headers()['content-security-policy']).toContain("script-src 'self' https://telegram.org");
     expect(response.headers()['x-content-type-options']).toBe('nosniff');

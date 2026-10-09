@@ -83,16 +83,16 @@ function renderAddStep() {
 const EDIT_BUTTON = '<button class="button" type="button" data-action="editCard">Редагувати</button>';
 
 function renderFinish(card, progress) {
+  if (state.confirmDelete) {
+    return `<p class="quest__warning">Видалити квест?</p>
+      <button class="button" type="button" data-action="deleteCard">Так, видалити</button>
+      <button class="screen__link" type="button" data-action="cancelDeleteNote">Ні, залишити</button>`;
+  }
   if (card.status === 'done') {
-    return '<button class="button" type="button" data-action="reopen">Повернути в план</button>';
+    return `<button class="button" type="button" data-action="reopen">Повернути в план</button>
+      <button class="button button--muted" type="button" data-action="askDeleteNote">Видалити квест</button>`;
   }
   if (!isQuest(progress)) {
-    if (state.confirmDelete) {
-      return `
-        <p class="quest__warning">Видалити квест?</p>
-        <button class="button" type="button" data-action="deleteCard">Так, видалити</button>
-        <button class="screen__link" type="button" data-action="cancelDeleteNote">Ні, залишити</button>`;
-    }
     return `
       <button class="button button--primary" type="button" data-action="finish">Готово</button>
       ${EDIT_BUTTON}
@@ -129,10 +129,14 @@ function renderQuest() {
         </div>
       </header>
       <p class="quest__subtitle">${getSubtitle(card, progress, today)}</p>
-      <div class="progress" data-progress="${ratio}">
+      ${
+        progress.total
+          ? `<div class="progress" data-progress="${ratio}">
         <span class="progress__bar"><span class="progress__fill"></span></span>
         <span class="progress__label">${progress.done} з ${progress.total}</span>
-      </div>
+      </div>`
+          : ''
+      }
       ${items ? `<ul class="checklist">${items}</ul>` : ''}
       ${renderAddStep()}
       <div class="quest__finish">${renderFinish(card, progress)}</div>
@@ -242,7 +246,6 @@ function openModal(html) {
   title?.addEventListener('input', () => {
     state.draft.title = title.value;
   });
-  modal.querySelector('.sheet__input')?.focus();
 }
 
 function closeModal() {
@@ -252,7 +255,6 @@ function closeModal() {
 function refresh() {
   root.innerHTML = renderQuest();
   bindForms(root);
-  if (state.adding) root.querySelector('.quest__add-input')?.focus();
 }
 
 function openCalendar(month) {

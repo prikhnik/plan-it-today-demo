@@ -9,17 +9,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 96px;
+  min-height: 96px;
   padding: 0 4px;
   border-style: solid;
   border-color: transparent;
-  border-width: 16px 52px;
-  border-image: var(--img-scroll-banner) 30 100 fill / 16px 52px stretch;
+  border-width: 24px 52px;
+  border-image: var(--img-scroll-banner) 45% 100 fill / 24px 52px stretch;
 }
 
 .quest__title {
-  max-height: 100%;
-  overflow-y: auto;
+  min-width: 0;
   font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.15;

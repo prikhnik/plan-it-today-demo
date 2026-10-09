@@ -14,10 +14,10 @@ const legacyCard = {
 };
 const step = { id: 's1', cardId: 'c1', parentId: null, text: 'Взяти гроші', done: false, order: 0 };
 
-test('records without a schema version get priority false', () => {
-  const data = migrateData({ cards: [legacyCard], steps: [step] }, null);
-  assert.equal(data.cards[0].priority, false);
-  assert.deepEqual(data.steps, [step]);
+test('clean demo migration clears old cards and steps once', () => {
+  for (const version of [null, 0, 1]) {
+    assert.deepEqual(migrateData({ cards: [legacyCard], steps: [step] }, version), { cards: [], steps: [] });
+  }
 });
 
 test('current version keeps priority as stored', () => {
@@ -41,7 +41,7 @@ test('broken cards and orphan steps are dropped, the rest stays', () => {
       cards: [legacyCard, { id: 'c2', title: 5 }, null, { ...legacyCard, id: 'c3', date: 'завтра' }],
       steps: [step, { ...step, id: 's2', cardId: 'missing' }, { ...step, id: 's3', parentId: 'missing' }],
     },
-    1,
+    SCHEMA_VERSION,
   );
   assert.deepEqual(
     data.cards.map((card) => card.id),
@@ -75,4 +75,31 @@ test('profile: known fields only, theme falls back to system', () => {
   });
   assert.equal(normalizeProfile([]), null);
   assert.equal(normalizeProfile('dark'), null);
+});
+
+test('completed cards restore all steps and children without changing active cards', () => {
+  const data = migrateData(
+    {
+      cards: [
+        { ...legacyCard, status: 'done' },
+        { ...legacyCard, id: 'active' },
+      ],
+      steps: [step, { ...step, id: 'child', parentId: step.id }, { ...step, id: 'active-step', cardId: 'active' }],
+    },
+    SCHEMA_VERSION,
+  );
+  assert.deepEqual(
+    data.steps.map((item) => item.done),
+    [true, true, false],
+  );
+});
+
+test('current data preserves card order, old current fields default to zero', () => {
+  const cards = [legacyCard, { ...legacyCard, id: 'ordered', order: -3 }];
+  const data = migrateData({ cards, steps: [step] }, SCHEMA_VERSION);
+  assert.deepEqual(
+    data.cards.map((card) => card.order),
+    [0, -3],
+  );
+  assert.deepEqual(migrateData(data, SCHEMA_VERSION), data);
 });

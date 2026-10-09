@@ -67,20 +67,20 @@ export const MOCK_CARDS = [
  * Builds cards and steps with dates relative to `today`, so the demo never goes stale.
  * @param {string} today ISO date.
  */
-export function createMockData(today, now = Date.now()) {
+export function createMockData(today, now = Date.now(), nextId = createId) {
   const cards = [];
   const steps = [];
 
   const addSteps = (list, cardId, parentId, forceDone) => {
     list.forEach(({ text, done, children }, order) => {
-      const id = createId();
+      const id = nextId();
       steps.push({ id, cardId, parentId, text, done: forceDone || (children.length === 0 && done), order });
       addSteps(children, cardId, id, forceDone);
     });
   };
 
   MOCK_CARDS.forEach((mock, index) => {
-    const id = createId();
+    const id = nextId();
     cards.push({
       id,
       title: mock.title,

@@ -3,6 +3,9 @@ import {
   getCardProgress,
   getChildSteps,
   getDayCards,
+  getHistoryCards,
+  getFirstOrder,
+  reorderCards,
   getPlannerCards,
   shouldReopen,
   toIsoDate,
@@ -11,7 +14,6 @@ import { createId } from '../core/id.js';
 import { track } from '../core/track.js';
 import { BROKEN, clearAll, readStored, writeJson } from '../core/storage.js';
 import { migrateData, normalizeProfile, SCHEMA_VERSION } from './migrations.js';
-import { createMockData } from './mock.js';
 
 const PROFILE_KEY = 'profile';
 const DATA_KEY = 'data';
@@ -57,7 +59,7 @@ function saveData(value) {
 }
 
 function seedData() {
-  const seeded = createMockData(toIsoDate());
+  const seeded = { cards: [], steps: [] };
   saveData(seeded);
   return seeded;
 }
@@ -79,7 +81,7 @@ function patchCard(id, patch) {
 function syncCardStatus(cardId) {
   const card = data.cards.find((item) => item.id === cardId);
   if (card && shouldReopen(card, getCardProgress(cardId, data.steps))) {
-    patchCard(cardId, { status: 'active', completedAt: null });
+    store.reopenCard(cardId);
   }
 }
 
@@ -103,8 +105,18 @@ export const store = {
   /** Everything the user typed: kept out of error reports. */
   getUserTexts: () => [...data.cards.map((card) => card.title), ...data.steps.map((step) => step.text)],
   getCard: (id) => data.cards.find((card) => card.id === id) ?? null,
-  getPlannerCards: (today) => getPlannerCards(data.cards, today),
+  getPlannerCards(today) {
+    const past = getPlannerCards(data.cards, today).filter((card) => card.status === 'active' && card.date < today);
+    for (const card of past.reverse()) {
+      patchCard(card.id, { date: today, order: getFirstOrder(data.cards, today, Boolean(card.priority)) });
+    }
+    return getPlannerCards(data.cards, today);
+  },
+  reorderCards(ids) {
+    updateData({ cards: reorderCards(data.cards, ids) });
+  },
   getDayCards: (day) => getDayCards(data.cards, day),
+  getHistoryCards: () => getHistoryCards(data.cards),
 
   addCard({ title, date }) {
     const card = {
@@ -116,6 +128,7 @@ export const store = {
       completedAt: null,
       createdAt: new Date().toISOString(),
       priority: false,
+      order: getFirstOrder(data.cards, date, false),
     };
     updateData({ cards: [...data.cards, card] });
     track('card_created', { future: date > toIsoDate() });
@@ -123,16 +136,33 @@ export const store = {
   },
 
   updateCard(id, patch) {
+    const card = this.getCard(id);
+    if (!card) return;
+    const date = patch.date ?? card.date;
+    const priority = patch.priority ?? Boolean(card.priority);
+    if (date !== card.date || priority !== Boolean(card.priority))
+      patch = { ...patch, order: getFirstOrder(data.cards, date, priority) };
     patchCard(id, patch);
   },
 
   completeCard(id) {
-    patchCard(id, { status: 'done', completedAt: toIsoDate() });
+    updateData({
+      cards: data.cards.map((card) => (card.id === id ? { ...card, status: 'done', completedAt: toIsoDate() } : card)),
+      steps: data.steps.map((step) => (step.cardId === id ? { ...step, done: true } : step)),
+    });
     track('quest_completed', { steps: getCardProgress(id, data.steps).total });
   },
 
   reopenCard(id) {
-    patchCard(id, { status: 'active', completedAt: null });
+    const card = this.getCard(id);
+    if (!card) return;
+    const date = card.date < toIsoDate() ? toIsoDate() : card.date;
+    patchCard(id, {
+      status: 'active',
+      completedAt: null,
+      date,
+      order: getFirstOrder(data.cards, date, Boolean(card.priority)),
+    });
   },
 
   deleteCard(id) {
@@ -174,7 +204,7 @@ export const store = {
     data = seedData();
   },
 
-  /** Removes everything stored on this device; the demo world is seeded again. */
+  /** Removes everything stored on this device; new starts are empty. */
   deleteAllData() {
     clearAll();
     broken = false;

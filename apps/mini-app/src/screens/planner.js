@@ -14,9 +14,11 @@ import { escapeHtml } from '../core/html.js';
 import { navigate } from '../core/router.js';
 import { showToast } from '../core/toast.js';
 import { getDecoIcon } from '../data/deco.js';
+import { mountCardSort } from '../core/card-sort.js';
 import { store } from '../data/store.js';
 
 const PAPERS = 3;
+let disposeSort = null;
 
 function renderNote(card, progress, index) {
   const deco = getDecoIcon(card.title);
@@ -31,7 +33,7 @@ function renderNote(card, progress, index) {
 
   return `
     <li class="planner__item">
-      <button class="note${modifiers}" type="button" data-action="openCard" data-card-id="${card.id}">
+      <button class="note${modifiers}${card.status === 'active' ? ' sort-card' : ''}" type="button" data-action="openCard" data-card-id="${card.id}"${card.status === 'active' ? ` data-sort-group="${Boolean(card.priority)}" aria-describedby="planner-sort-hint"` : ''}>
         <span class="note__title">${escapeHtml(card.title)}</span>
         ${isQuest(progress) ? renderBadge(progress) : ''}
         ${deco ? `<span class="note__deco note__deco--${deco}" aria-hidden="true"></span>` : ''}
@@ -48,7 +50,7 @@ function addFromQuickField(value) {
   const today = toIsoDate();
   const { title, date } = extractNoteDate(value, today);
   store.addCard({ title, date });
-  navigate('planner', { focus: true }, { replace: true });
+  navigate('planner', {}, { replace: true });
   if (date !== today) showToast(`Додано на ${formatDayLabel(date, today)}`);
 }
 
@@ -73,17 +75,23 @@ export const plannerScreen = {
           <button class="quick-add__submit" type="submit" aria-label="Додати справу"></button>
         </form>
         <h1 class="planner__day">${formatDateChip(today, today)}</h1>
-        ${cards.length ? `<ul class="planner__grid">${notes}</ul>` : renderEmpty('planner', 'Тут буде твоя перша справа')}
+        ${cards.length ? `<ul class="planner__grid">${notes}<li class="sort-status"><span role="status" aria-live="polite"></span></li></ul><p class="sort-hint" id="planner-sort-hint">Утримуй і перетягни справу, щоб змінити порядок. З клавіатури: Alt + стрілки.</p>` : renderEmpty('planner', 'Тут буде твоя перша справа')}
       </section>`;
   },
 
-  mount(root, params) {
+  mount(root) {
+    const list = root.querySelector('.planner__grid');
+    if (list) disposeSort = mountCardSort(list, (ids) => store.reorderCards(ids));
     const form = root.querySelector('.quick-add');
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       addFromQuickField(form.elements.text.value);
     });
-    if (params.focus) form.elements.text.focus();
+  },
+
+  unmount() {
+    disposeSort?.();
+    disposeSort = null;
   },
 
   actions: {

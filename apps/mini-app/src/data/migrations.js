@@ -5,11 +5,12 @@
 /** @typedef {{ cards: Card[], steps: Step[] }} DemoData */
 
 /** Version of what `pit:data` holds. Records written before versioning count as 0. */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 /** `MIGRATIONS[n]` turns data of version n - 1 into version n. */
 const MIGRATIONS = {
-  1: (data) => ({ ...data, cards: data.cards.map((card) => ({ ...card, priority: Boolean(card.priority) })) }),
+  2: () => ({ cards: [], steps: [] }),
+  1: (data) => ({ ...data, cards: data.cards.map((card) => ({ ...card, priority: Boolean(card?.priority) })) }),
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -37,6 +38,7 @@ function toCard(card) {
     completedAt: isString(card.completedAt) && ISO_DATE.test(card.completedAt) ? card.completedAt : null,
     createdAt: isString(card.createdAt) ? card.createdAt : new Date(0).toISOString(),
     priority: card.priority === true,
+    order: Number.isFinite(card.order) ? card.order : 0,
   };
 }
 
@@ -80,7 +82,8 @@ function normalizeData(data) {
     .map(toStep)
     .filter((step) => step && cardIds.has(step.cardId))
     .filter((step, _, all) => step.parentId === null || all.some((parent) => parent.id === step.parentId));
-  return { cards, steps };
+  const doneIds = new Set(cards.filter((card) => card.status === 'done').map((card) => card.id));
+  return { cards, steps: steps.map((step) => (doneIds.has(step.cardId) ? { ...step, done: true } : step)) };
 }
 
 /**

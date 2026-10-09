@@ -28,7 +28,8 @@ function syncModal(root) {
   const panel = /** @type {HTMLElement | null} */ (root.querySelector('.modal__panel'));
   if (panel && panel !== openPanel) {
     openPanel = panel;
-    if (!panel.contains(document.activeElement)) getFocusable(panel)[0]?.focus();
+    panel.tabIndex = -1;
+    panel.focus();
   } else if (!panel && openPanel) {
     openPanel = null;
     if (trigger) findTrigger(root, trigger)?.focus();

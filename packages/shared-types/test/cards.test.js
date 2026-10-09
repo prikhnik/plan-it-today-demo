@@ -1,7 +1,16 @@
 // @ts-check
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { getDayCards, getPlannerCards, isOnPlanner, isPriorityShown, shouldReopen } from '../src/cards.js';
+import {
+  getDayCards,
+  getHistoryCards,
+  reorderCards,
+  getFirstOrder,
+  getPlannerCards,
+  isOnPlanner,
+  isPriorityShown,
+  shouldReopen,
+} from '../src/cards.js';
 
 const TODAY = '2026-10-08';
 /** @returns {import('../src/types.js').Card} */
@@ -103,4 +112,42 @@ test('priority is shown only on active cards', () => {
   assert.equal(isPriorityShown(card('a', { priority: true })), true);
   assert.equal(isPriorityShown(card('b')), false);
   assert.equal(isPriorityShown(card('c', { priority: true, status: 'done', completedAt: TODAY })), false);
+});
+
+test('history sorts completed days and newest cards, excludes active cards, handles legacy dates', () => {
+  const cards = [
+    card('active'),
+    card('older', { status: 'done', completedAt: '2026-10-07' }),
+    card('today-old', { status: 'done', completedAt: TODAY }),
+    card('today-new', { status: 'done', completedAt: TODAY, createdAt: '2026-10-08T12:00:00.000Z' }),
+    card('legacy', { status: 'done', date: '2026-10-06' }),
+  ];
+  assert.deepEqual(
+    getHistoryCards(cards).map((item) => item.id),
+    ['today-new', 'today-old', 'older', 'legacy'],
+  );
+  assert.equal(cards[0].id, 'active');
+});
+
+test('manual order stays inside a day and priority group', () => {
+  const cards = [
+    card('a'),
+    card('b'),
+    card('priority', { priority: true }),
+    card('other', { date: '2026-10-09' }),
+    card('done', { status: 'done', completedAt: TODAY }),
+  ];
+  const reordered = reorderCards(cards, ['b', 'a']);
+  assert.deepEqual(
+    getPlannerCards(reordered, TODAY).map((item) => item.id),
+    ['priority', 'b', 'a', 'done'],
+  );
+  for (const invalid of [['a'], ['a', 'a'], ['b', 'priority'], ['a', 'other'], ['done']])
+    assert.equal(reorderCards(cards, invalid), cards);
+  assert.equal(getFirstOrder(reordered, TODAY, false), -1);
+  const added = [...reordered, card('new', { order: -1 })];
+  assert.deepEqual(
+    getPlannerCards(added, TODAY).map((item) => item.id),
+    ['priority', 'new', 'b', 'a', 'done'],
+  );
 });

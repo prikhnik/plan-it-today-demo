@@ -12,7 +12,7 @@ export const settingsAccessScreen = {
 
     return `
       <section class="screen">
-        <h1 class="screen__title">Швидкий вхід</h1>
+        <h1 class="screen__title">Швидкий доступ</h1>
         <ol class="howto">
           <li class="howto__step">
             <span class="howto__title">Кнопка «Відкрити»</span>

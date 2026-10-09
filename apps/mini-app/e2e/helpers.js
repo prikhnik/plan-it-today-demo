@@ -1,4 +1,7 @@
 // @ts-check
+import { randomUUID } from 'node:crypto';
+import { createMockData } from '../src/data/mock.js';
+import { toIsoDate } from '@plan-it-today/shared-types';
 import { expect, test as base } from '@playwright/test';
 
 export const ACCEPTED_PROFILE = { introSeen: true, termsAcceptedVersion: '1.1', theme: 'light' };
@@ -73,3 +76,17 @@ export const getTomorrow = (page) =>
 /** @param {import('@playwright/test').Page} page */
 export const readStorage = (page, key) =>
   page.evaluate((name) => JSON.parse(localStorage.getItem(`pit:${name}`) ?? 'null'), key);
+
+/** Explicit fixtures only: public app starts empty.
+ * @param {import('@playwright/test').Page} page
+ */
+export async function seedCards(page) {
+  await page.addInitScript(
+    (data) => {
+      if (localStorage.getItem('pit:data')) return;
+      localStorage.setItem('pit:data', JSON.stringify(data));
+      localStorage.setItem('pit:schemaVersion', '2');
+    },
+    createMockData(toIsoDate(), Date.now(), randomUUID),
+  );
+}

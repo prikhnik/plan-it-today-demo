@@ -94,7 +94,6 @@ export const notebookScreen = {
     root = main;
     const input = root.querySelector('.notebook__input');
     input.addEventListener('input', handleInput);
-    input.focus();
   },
 
   actions: {

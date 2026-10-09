@@ -16,10 +16,12 @@ import { renderCalendar } from '../components/calendar.js';
 import { renderEmpty } from '../components/empty.js';
 import { escapeHtml } from '../core/html.js';
 import { navigate } from '../core/router.js';
+import { mountCardSort } from '../core/card-sort.js';
 import { store } from '../data/store.js';
 
 const state = { date: '', month: '' };
 let root = null;
+let disposeSort = null;
 
 const getTomorrow = () => addDays(toIsoDate(), 1);
 
@@ -49,7 +51,7 @@ function renderRow(card, steps) {
   const progress = getCardProgress(card.id, steps);
   return `
     <li class="day-list__item">
-      <button class="day-row${isPriorityShown(card) ? ' day-row--priority' : ''}" type="button" data-action="openCard" data-card-id="${card.id}">
+      <button class="day-row sort-card${isPriorityShown(card) ? ' day-row--priority' : ''}" type="button" data-action="openCard" data-card-id="${card.id}" data-sort-group="${Boolean(card.priority)}" aria-describedby="future-sort-hint">
         <span class="day-row__title">${escapeHtml(card.title)}</span>
         ${isQuest(progress) ? renderBadge(progress) : ''}
         <span class="day-row__chevron" aria-hidden="true"></span>
@@ -79,7 +81,7 @@ export const futureScreen = {
     const cards = store.getDayCards(state.date);
     const steps = store.getSteps();
     const list = cards.length
-      ? `<ul class="day-list">${cards.map((card) => renderRow(card, steps)).join('')}</ul>`
+      ? `<ul class="day-list">${cards.map((card) => renderRow(card, steps)).join('')}<li class="sort-status"><span role="status" aria-live="polite"></span></li></ul><p class="sort-hint" id="future-sort-hint">Утримуй і перетягни справу, щоб змінити порядок. З клавіатури: Alt + стрілки.</p>`
       : renderEmpty('future', 'На цей день справ немає');
 
     return `
@@ -95,6 +97,13 @@ export const futureScreen = {
 
   mount(main) {
     root = main;
+    const list = root.querySelector('.day-list');
+    if (list) disposeSort = mountCardSort(list, (ids) => store.reorderCards(ids));
+  },
+
+  unmount() {
+    disposeSort?.();
+    disposeSort = null;
   },
 
   actions: {

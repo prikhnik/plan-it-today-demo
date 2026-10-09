@@ -19,7 +19,6 @@ import { initMonitoring } from './core/monitoring.js';
 import { getTelegramUser, initTelegram, setBackButton } from './core/telegram.js';
 import { showToast } from './core/toast.js';
 import { track } from './core/track.js';
-import { MOCK_CARDS } from './data/mock.js';
 import { store } from './data/store.js';
 import { TERMS_VERSION } from './data/terms-version.js';
 import { dataResetScreen } from './screens/data-reset.js';
@@ -35,6 +34,7 @@ import { settingsDataScreen } from './screens/settings-data.js';
 import { settingsDatesScreen } from './screens/settings-dates.js';
 import { settingsThemeScreen } from './screens/settings-theme.js';
 import { settingsScreen } from './screens/settings.js';
+import { settingsHistoryScreen } from './screens/settings-history.js';
 
 const START_SCREEN = { intro: 'intro', terms: 'terms', done: 'planner' };
 
@@ -137,6 +137,7 @@ registerScreen('quest', questScreen);
 registerScreen('future', futureScreen);
 registerScreen('help', helpScreen);
 registerScreen('settings', settingsScreen);
+registerScreen('settings-history', settingsHistoryScreen);
 registerLazyScreen('settings-terms', () => import('./screens/terms.js').then((module) => module.termsReadScreen));
 registerScreen('settings-theme', settingsThemeScreen);
 registerScreen('settings-dates', settingsDatesScreen);
@@ -149,9 +150,9 @@ onRouteChange(render);
 const startScreen = store.isBroken()
   ? 'data-reset'
   : START_SCREEN[getOnboardingStep(store.getProfile(), TERMS_VERSION)];
-navigate(startScreen, { focus: true }, { reset: true });
+navigate(startScreen, {}, { reset: true });
 track('app_open', { screen: startScreen });
 
 if (import.meta.env.DEV) {
-  window.demo = { navigate, back, store, mock: MOCK_CARDS };
+  window.demo = { navigate, back, store };
 }

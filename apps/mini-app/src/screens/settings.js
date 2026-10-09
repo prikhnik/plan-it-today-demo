@@ -1,8 +1,9 @@
 // @ts-check
 const ROWS = [
+  { label: 'Історія справ', nav: 'settings-history' },
   { label: 'Тема', nav: 'settings-theme' },
   { label: 'Як писати дату', nav: 'settings-dates' },
-  { label: 'Швидкий вхід', nav: 'settings-access' },
+  { label: 'Швидкий доступ', nav: 'settings-access' },
   { label: 'Демо ШІ-помічника', nav: 'ai-demo' },
   { label: 'Умови користування', nav: 'settings-terms' },
   { label: 'Дані користувача', nav: 'settings-data' },

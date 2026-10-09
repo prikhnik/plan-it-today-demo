@@ -8,6 +8,7 @@ import {
   pickDate,
   readStorage,
   seedProfile,
+  seedCards,
   test,
 } from './helpers.js';
 
@@ -26,6 +27,7 @@ test('onboarding: intro and terms once, then the planner', async ({ page }) => {
 test.describe('with accepted terms', () => {
   test.beforeEach(async ({ page }) => {
     await seedProfile(page);
+    await seedCards(page);
     await page.goto('./');
     await expect(page.locator('.planner')).toBeVisible();
   });
@@ -64,7 +66,7 @@ test.describe('with accepted terms', () => {
     expect(await page.locator('.quest__finish .button').allInnerTexts()).toEqual(['Завершити квест', 'Редагувати']);
     await expect(page.locator('.quest__header button')).toHaveCount(0);
     await page.getByRole('button', { name: 'Редагувати', exact: true }).click();
-    await expect(page.locator('.modal__panel textarea')).toBeFocused();
+    await expect(page.locator('.modal__panel')).toBeFocused();
   });
 
   test('move a card to «Майбутнє»', async ({ page }) => {
@@ -138,7 +140,7 @@ test.describe('with accepted terms', () => {
     await editButton.focus();
     await editButton.press('Enter');
     const panel = page.locator('.modal__panel');
-    await expect(panel.locator('textarea')).toBeFocused();
+    await expect(panel).toBeFocused();
     for (let index = 0; index < 6; index += 1) {
       await page.keyboard.press('Tab');
       expect(await panel.evaluate((element) => element.contains(document.activeElement))).toBe(true);
@@ -184,7 +186,7 @@ test.describe('stored data', () => {
     await expect(page.getByRole('heading', { name: 'Дані пошкоджені' })).toBeVisible();
     await page.getByRole('button', { name: 'Скинути дані' }).click();
     await expect(page.locator('[data-action="continue"]')).toBeVisible();
-    expect((await readStorage(page, 'data')).cards.length).toBeGreaterThan(0);
+    expect((await readStorage(page, 'data')).cards).toEqual([]);
   });
 
   test('old records without a schema version are migrated', async ({ page }) => {
@@ -216,10 +218,12 @@ test.describe('stored data', () => {
       );
     });
     await page.goto('./');
-    await expect(note(page, 'Стара справа')).toBeVisible();
-    expect(await readStorage(page, 'schemaVersion')).toBe(1);
-    const { cards } = await readStorage(page, 'data');
-    expect(cards[0]).toEqual(expect.objectContaining({ priority: false }));
-    expect(cards[0]).not.toHaveProperty('legacy');
+    await expect(note(page, 'Стара справа')).toHaveCount(0);
+    expect(await readStorage(page, 'schemaVersion')).toBe(2);
+    expect(await readStorage(page, 'data')).toEqual({ cards: [], steps: [] });
+    await page.locator('.quick-add__input').fill('Новий старт');
+    await page.locator('.quick-add__input').press('Enter');
+    await page.reload();
+    await expect(note(page, 'Новий старт')).toBeVisible();
   });
 });
